@@ -17,7 +17,13 @@ let process_file filename =
   let lexer = Lexer.of_channel file in
   (* Parse le fichier. *)
   let (program, span) = Parser.parse_program lexer in
-  printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program)
+  (* printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program) *)
+  let rec compile arbre = 
+    match arbre with
+    Ast.Program(expression_l) -> printf "Do %t\n" (Ast.print_expression (fst (List.hd (fst expression_l))))
+    | _ -> failwith "todo"
+  in compile program
+
 
 (* Le point de départ du compilateur. *)
 let _ =
