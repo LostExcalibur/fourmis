@@ -1,0 +1,5 @@
+_build/
+src/ast.*
+src/lexer.*
+src/parser.*
+antsc
