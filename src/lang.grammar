@@ -6,9 +6,34 @@ type command =
 	| Label		<ident> : <command>
 	| Goto		goto <ident>
 
+type expression =
+	| Do 			do <command>
+	| IfThen		if_then  <condition> <expression>
+	| IfElse		if_then_else  <condition> <expression> <expression>
+	| While			while <condition> do <expression>
+
+type condition =
+	| Eq		= <direction> <valeur>
+	| Neq		!= <direction> <valeur>
+
+type valeur = 
+	| Friend			friend		
+	| Foe				foe
+	| FriendWithFood	friendwithfood
+	| FoeWithFood		foewithfood
+	| Food				food
+	| Rock				rock
+	| Marker			marker <int>
+	| FoeMarker			foemarker
+	| Home				home
+	| FoeHome			foehome
+
 type direction =
-	| Left		left
-	| Right		right
+	| Here				here
+	| Left				left
+	| Right				right
+	| Ahead				ahead
+
 
 type program =
-	| Program 		<command+;>
+	| Program 		<expression+;>
