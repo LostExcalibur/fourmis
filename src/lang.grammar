@@ -1,16 +1,17 @@
 type command =
+	| Nope 		nop
 	| Move		move
 	| Turn		turn <direction>
 	| Pickup	pickup
+	| Mark 		mark <int>
 	| Drop		drop
 	| Label		<ident> : <command>
 	| Goto		goto <ident>
 
 type expression =
-	| Do 			do <command>
-	| IfThen		if_then  <condition> <expression>
-	| IfElse		if_then_else  <condition> <expression> <expression>
-	| While			while <condition> do <expression>
+	| Do 			{<command*;>}
+	| IfThenElse	if (<condition>) then <expression> else <expression>
+	| While			while (<condition>) do <expression>
 
 type condition =
 	| Eq		= <direction> <valeur>
