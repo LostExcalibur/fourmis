@@ -16,6 +16,7 @@ type expression =
 type condition =
 	| Eq		= <direction> <valeur>
 	| Neq		!= <direction> <valeur>
+	| Random	random <int>
 
 type valeur = 
 	| Friend			friend		
