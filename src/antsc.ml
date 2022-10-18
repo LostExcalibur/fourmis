@@ -11,6 +11,9 @@ let write_file filename = (* Ceci est un exemple. *)
   write_command "Goto start";
   close_out oc
 
+let i = ref 0
+
+let oc = open_out "cervo.brain"
 
 let comp_direction dir =
     match dir with
@@ -19,19 +22,31 @@ let comp_direction dir =
         | Ast.Right ->              "Right"
         | Ast.Ahead ->              "Ahead"
 
+let comp_valeur valeur =
+    match valeur with
+        | Ast.Friend ->             "Friend"
+        | Ast.Foe ->                "Foe"
+        | Ast.FriendWithFood ->     "FriendWithFood"
+        | Ast.FoeWithFood ->        "FoeWithFood"
+        | Ast.Food ->               "Food"
+        | Ast.Rock ->               "Rock"
+        | Ast.Marker(i,_) ->        "Marker "^(string_of_int i)
+        | Ast.FoeMarker ->          "FoeMarker"
+        | Ast.Home ->               "Home"
+        | Ast.FoeHome ->            "FoeHome"
 
 let comp_command commande =
     match commande with
-        | Ast.Nope ->               printf "no operation \n"
-        | Ast.Move ->               printf "label_n:
-                                                Move label_n \n"
-        | Ast.Turn(direction,_) ->  printf "Turn %s\n" (comp_direction direction)
-        | Ast.Pickup ->             printf "label_n:
-                                                PickUp label_n"
-        | Ast.Mark(i,_) ->            printf "Mark %d \n" i
-        | Ast.Drop ->               printf "Drop \n"
-        | Ast.Label(id,commande) -> printf "labellll"
-        | Ast.Goto(id) ->           printf "gooo"
+        | Ast.Nope ->               fprintf oc "\tno operation \n"
+        | Ast.Move ->               fprintf oc "label_n:
+                                               \tMove label_n \n"
+        | Ast.Turn(direction,_) ->  fprintf oc  "\tTurn %s\n" (comp_direction direction)
+        | Ast.Pickup ->             fprintf oc "label_n:
+                                                \tPickUp label_n"
+        | Ast.Mark(i,_) ->          fprintf oc "\tMark %d \n" i
+        | Ast.Drop ->               fprintf oc "\tDrop \n"
+        | Ast.Label(id,commande) -> fprintf oc "\tlabellll"
+        | Ast.Goto(id) ->           fprintf oc "\tgooo"
 
 
 let comp_condition cond =
@@ -54,18 +69,6 @@ let comp_expression exp =
         | Ast.While(cond,exp) ->            printf "wile"
 
 
-let comp_valeur valeur =
-    match valeur with
-        | Ast.Friend ->             printf "amii"
-        | Ast.Foe ->                printf "paami :-("
-        | Ast.FriendWithFood ->     printf "amimangé"
-        | Ast.FoeWithFood ->        printf "paamimangé"
-        | Ast.Food ->               printf "mangéééé"
-        | Ast.Rock ->               printf "cayou"
-        | Ast.Marker(i) ->          printf "marqeur"
-        | Ast.FoeMarker ->          printf "markeur méchant"
-        | Ast.Home ->               printf "maison"
-        | Ast.FoeHome ->            printf "maison méchant"
 
 
 
