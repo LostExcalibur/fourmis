@@ -38,14 +38,12 @@ let comp_valeur valeur =
 let comp_command commande =
     match commande with
         | Ast.Nope ->               fprintf oc "\tno operation \n"
-        | Ast.Move ->               fprintf oc "label_n:
-                                               \tMove label_n \n"
+        | Ast.Move ->               fprintf oc "label_n:\n\tMove label_n \n"
         | Ast.Turn(direction,_) ->  fprintf oc  "\tTurn %s\n" (comp_direction direction)
-        | Ast.Pickup ->             fprintf oc "label_n:
-                                                \tPickUp label_n"
+        | Ast.Pickup ->             fprintf oc "label_n:\n\tPickUp label_n"
         | Ast.Mark(i,_) ->          fprintf oc "\tMark %d \n" i
         | Ast.Drop ->               fprintf oc "\tDrop \n"
-        | Ast.Label(id,commande) -> fprintf oc "\tlabellll"
+        | Ast.Label(id,expr) -> fprintf oc "\tlabellll"
         | Ast.Goto(id) ->           fprintf oc "\tgooo"
 
 
@@ -79,7 +77,7 @@ let comp_program program =
                 let rec aux l =
                     match l with
                         |[] -> ()
-                        |(exp,_)::q -> comp_expression (exp) ; aux q
+                        |(exp,_)::q -> comp_expression exp ; aux q
                 in
                 aux (expression_l)
                 
@@ -91,7 +89,7 @@ let process_file filename =
   let lexer = Lexer.of_channel file in
   (* Parse le fichier. *)
   let (program, span) = Parser.parse_program lexer in
-  (* printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program) *)
+  printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program);
   comp_program program
 
 (* Le point de départ du compilateur. *)

@@ -3,3 +3,4 @@ src/ast.*
 src/lexer.*
 src/parser.*
 antsc
+*.brain
