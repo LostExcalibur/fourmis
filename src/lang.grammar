@@ -5,7 +5,7 @@ type command =
 	| Pickup	pickup
 	| Mark 		mark <int>
 	| Drop		drop
-	| Label		<ident> : <command>
+	| Label		<ident> : <expression>
 	| Goto		goto <ident>
 
 type expression =
