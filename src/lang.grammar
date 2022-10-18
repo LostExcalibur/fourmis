@@ -14,7 +14,7 @@ type expression =
 	| While			while (<condition>) do <expression>
 
 type condition =
-	| Eq		= <direction>  <valeur>
+	| Eq		= <direction> <valeur>
 	| Neq		!= <direction> <valeur>
 	| Random	random <int>
 
