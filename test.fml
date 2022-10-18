@@ -3,4 +3,6 @@ nop;
 turn left;
 };
 if (= left friend) then {move} else {nop};
-if (random 2) then {pickup} else {drop}
+if (random 2) then {pickup} else {drop};
+{nop};
+while (!= right foe) do {turn right}

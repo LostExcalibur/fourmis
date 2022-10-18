@@ -37,7 +37,7 @@ let comp_valeur valeur =
 
 let comp_command commande =
     match commande with
-        | Ast.Nope ->               fprintf oc "\tno operation \n"
+        | Ast.Nope ->               ()
         | Ast.Move ->
                 fprintf oc "label_%d:\n\tMove label_%d \n" !i !i;
                 incr i
@@ -79,9 +79,16 @@ let rec comp_expression exp =
                         fprintf oc "label_%d:\n" (c+1);
                         comp_expression exp2;
                         fprintf oc "\tGoto label_%d\n" (c+2);
-                        fprintf oc "label_%d:\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+2)
             
-        | Ast.While(cond,exp) ->            printf "wile"
+        | Ast.While((cond,_),(exp,_)) ->
+                        let c = !i in i := c + 3;
+                        fprintf oc "label_%d:\n" c;
+                        comp_condition cond (c+1);
+                        fprintf oc "label_%d:\n" (c+1);
+                        comp_expression exp;
+                        fprintf oc "\tGoto label_%d\n" c;
+                        fprintf oc "label_%d:\n" (c+2)
 
 
 
