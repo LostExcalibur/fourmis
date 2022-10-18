@@ -1,2 +1,20 @@
 	no operation 
 	Turn Left
+	Sense Left label_0 label_1 Friend
+label_0:
+label_3:
+	Move label_3 
+	Goto label_2
+label_1:
+	no operation 
+	Goto label_2
+label_2:
+	Flip 2 label_4 label_5
+label_4:
+label_7:
+	PickUp label_7
+	Goto label_6
+label_5:
+	Drop 
+	Goto label_6
+label_6:

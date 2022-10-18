@@ -38,9 +38,13 @@ let comp_valeur valeur =
 let comp_command commande =
     match commande with
         | Ast.Nope ->               fprintf oc "\tno operation \n"
-        | Ast.Move ->               fprintf oc "label_n:\n\tMove label_n \n"
+        | Ast.Move ->
+                fprintf oc "label_%d:\n\tMove label_%d \n" !i !i;
+                incr i
         | Ast.Turn(direction,_) ->  fprintf oc  "\tTurn %s\n" (comp_direction direction)
-        | Ast.Pickup ->             fprintf oc "label_n:\n\tPickUp label_n"
+        | Ast.Pickup ->
+                fprintf oc "label_%d:\n\tPickUp label_%d\n" !i !i;
+                incr i
         | Ast.Mark(i,_) ->          fprintf oc "\tMark %d \n" i
         | Ast.Drop ->               fprintf oc "\tDrop \n"
         | Ast.Label(id,expr) -> fprintf oc "\tlabellll"
@@ -54,7 +58,7 @@ let comp_condition cond =
         | Ast.Random(p) ->                  printf "random"
 
 
-let comp_expression exp =
+let rec comp_expression exp =
     match exp with
         | Ast.Do(commandes_l,_) ->
                 let rec aux l =
@@ -63,7 +67,41 @@ let comp_expression exp =
                         |(commande,_)::q -> comp_command commande ; aux q
                 in
                 aux (commandes_l)
-        | Ast.IfThenElse(cond,exp1,exp2) -> printf "ite"
+        | Ast.IfThenElse((cond,_),(exp1,_),(exp2,_)) -> begin 
+            match cond with
+                | Ast.Random(p,_) ->
+                        let c = !i in i := c + 3;
+                        fprintf oc "\tFlip %d label_%d label_%d\n" (p) (c) (c+1); 
+                        fprintf oc "label_%d:\n" c;
+                        comp_expression exp1;
+                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+1);
+                        comp_expression exp2;
+                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+2);
+
+                | Ast.Eq((direction,_),(valeur,_)) ->
+                        let c = !i in i := c + 3;
+                        fprintf oc "\tSense %s label_%d label_%d %s\n" (comp_direction direction) (c) (c+1) (comp_valeur valeur);
+                        fprintf oc "label_%d:\n" c;
+                        comp_expression exp1;
+                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+1);
+                        comp_expression exp2;
+                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+2);
+
+                | Ast.Neq((direction,_),(valeur,_)) -> 
+                        let c = !i in i := c + 3;
+                        fprintf oc "\tSense %s label_%d label_%d %s\n" (comp_direction direction) (c+1) (c) (comp_valeur valeur);
+                        fprintf oc "label_%d:\n" c;
+                        comp_expression exp1;
+                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+1);
+                        comp_expression exp2;
+                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "label_%d:\n" (c+2);
+            end
         | Ast.While(cond,exp) ->            printf "wile"
 
 

@@ -1,4 +1,6 @@
 {
 nop;
 turn left;
-}
+};
+if (= left friend) then {move} else {nop};
+if (random 2) then {pickup} else {drop}
