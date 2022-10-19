@@ -64,6 +64,7 @@ let comp_command (commande: Ast.command) (oc: out_channel) : unit =
         | Ast.Move ->
                 fprintf oc "  Move label_%d \n  Goto label_%d\nlabel_%d:\n " !i !i !i;
                 incr i
+
         | Ast.Turn(direction,_) ->  fprintf oc  "  Turn %s\n" (comp_lr direction)
         | Ast.Pickup ->
                 fprintf oc "  PickUp label_%d\n  Goto label_%d\nlabel_%d:\n" !i !i !i;
@@ -85,6 +86,29 @@ let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
 let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
     match exp with
         | Ast.Do(commande,_) -> comp_command commande oc
+
+        | Ast.Moveelse(exp_l,_) ->
+            let comp_with_out = (fun x -> comp_expression x oc) in begin
+                let c = !i in i := c + 2;
+                fprintf oc "  Move label_%d\n" c;
+                fprintf oc "  Goto label_%d\n" (c+1);
+                fprintf oc "label_%d:\n" c;
+                List.iter comp_with_out (List.map unwrap_expr exp_l);
+                fprintf oc "  Goto label_%d\n" (c+1);
+                fprintf oc "label_%d:\n" (c+1);
+            end
+
+        | Ast.Pickelse(exp_l,_) ->
+            let comp_with_out = (fun x -> comp_expression x oc) in begin
+                let c = !i in i := c + 2;
+                fprintf oc "  Pickup label_%d\n" c;
+                fprintf oc "  Goto label_%d\n" (c+1);
+                fprintf oc "label_%d:\n" c;
+                List.iter comp_with_out (List.map unwrap_expr exp_l);
+                fprintf oc "  Goto label_%d\n" (c+1);
+                fprintf oc "label_%d:\n" (c+1);
+            end
+
         | Ast.IfThenElse((cond,_),(exp1,_),(exp2,_)) ->
             let comp_with_out = (fun x -> comp_expression x oc) in begin
                 let c = !i in i := c + 3;
