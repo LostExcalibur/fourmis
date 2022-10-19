@@ -158,8 +158,8 @@ let process_file (filename: string) (output: string) : unit =
     let file = open_in filename and out = open_out output in
     let lexer = Lexer.of_channel file in
   (* Parse le fichier. *)
-    let (program, span) = Parser.parse_program lexer in
-    printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program);
+    let (program, _) = Parser.parse_program lexer in
+    (* printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program); *)
     comp_program program out
 
 
@@ -167,7 +167,7 @@ let process_file (filename: string) (output: string) : unit =
 let _ =
   let argc = Array.length Sys.argv in 
   (* On commence par lire le nom du fichier à compiler passé en paramètre. *)
-  if argc <= 2 then begin
+  if argc < 2 then begin
     (* Pas de fichier... *)
     eprintf "Usage :\n\t<%s> entree sortie\n" Sys.argv.(0);
     exit 1
