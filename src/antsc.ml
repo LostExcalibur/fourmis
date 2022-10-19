@@ -87,7 +87,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
     match exp with
         | Ast.Do(commande,_) -> comp_command commande oc
 
-        | Ast.Moveelse(exp_l,_) ->
+        | Ast.MoveElse(exp_l,_) ->
             let comp_with_out = (fun x -> comp_expression x oc) in begin
                 let c = !i in i := c + 2;
                 fprintf oc "  Move label_%d\n" c;
@@ -98,7 +98,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
                 fprintf oc "label_%d:\n" (c+1);
             end
 
-        | Ast.Pickelse(exp_l,_) ->
+        | Ast.PickElse(exp_l,_) ->
             let comp_with_out = (fun x -> comp_expression x oc) in begin
                 let c = !i in i := c + 2;
                 fprintf oc "  Pickup label_%d\n" c;

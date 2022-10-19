@@ -8,8 +8,8 @@ type command =
 
 type expression =
 	| Do 			<command>
-	| Moveelse  moveelse {<expression+;>}
-	| Pickelse  pickelse {<expression+;>}
+	| MoveElse  	moveelse {<expression+;>}
+	| PickElse  	pickelse {<expression+;>}
 	| IfThenElse	if (<condition>) then {<expression+;>} else {<expression+;>}
 	| While			while (<condition>) do {<expression+;>}
 	| Macro			macro <ident> = {<expression+;>}
