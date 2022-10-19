@@ -7,9 +7,9 @@ type command =
 	| Drop		drop
 
 type expression =
-	| Do 			<command*;>
-	| IfThenElse	if (<condition>) then {<expression>} else {<expression>}
-	| While			while (<condition>) do {<expression>}
+	| Do 			<command>
+	| IfThenElse	if (<condition>) then {<expression+;>} else {<expression+;>}
+	| While			while (<condition>) do {<expression+;>}
 	| Macro			macro <ident> = {<expression+;>}
 	| Call			call <ident>
 

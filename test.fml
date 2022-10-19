@@ -1,8 +1,165 @@
-{
-nop;
-turn left;
+macro canMove = {
+    if (= ahead rock) then {
+        if (random 2) then {
+            do {
+                turn left;
+                turn left
+            };
+            if (= ahead rock) then {
+                do{
+                    turn left;
+                    move
+                }
+            }
+            else {
+                do {
+                    move
+                }
+            }
+        }
+        else {
+            do {
+                turn right;
+                turn right
+            };
+            if (= ahead rock) then {
+                do{
+                    turn right;
+                    move
+                }
+            }
+            else {
+                do {
+                    move
+                }
+            }
+        }
+    }
+    else {
+        do {
+            move
+        }
+    }
 };
-if (= leftahead friend) then {move} else {nop};
-if (random 2) then {pickup} else {drop};
-{nop};
-while (!= rightahead foe) do {turn right}
+do {
+    drop
+};
+if (= here food) then {
+    do {
+        pickup
+    };
+    if (= ahead marker 1) then {
+        call canMove;
+        do {
+            mark 0
+        }
+    }
+    else {
+        if (= rightahead marker 1) then {
+            do {
+                turn right;
+                call canMove;
+                mark 0
+            }
+        }
+        else {
+            if (= leftahead marker 1) then {
+                do {
+                    turn left;
+                    call canMove;
+                    mark 0
+                }
+            }
+            else {
+                if (random 3) then {
+                    do {
+                        trun left
+                    }
+                }
+                else {
+                    if (random 2) then {
+                        do {
+                            turn right
+                        }
+                    }
+                    else {
+                        do {
+                            nop
+                        }
+                    }
+                };
+                do {
+                    call canMove;
+                    mark 0
+                }
+            }
+        }
+    }
+}
+else {
+    if (= ahead marker 0) then {
+        do {
+            call canMove;
+            mark 1
+        }
+    }
+    else {
+        if (= rightahead marker 0) then {
+            do {
+                turn right;
+                call canMove;
+                mark 1
+            }
+        }
+        else {
+            if (= leftahead marker 0) then {
+                do {
+                    turn left;
+                    call canMove;
+                    mark 1
+                }
+
+            }
+            else {
+                do {
+                    call canMove;
+                    mark 1
+                }
+            }
+        }
+    }
+};
+if (= here home) then {
+    do {
+        drop;
+    };
+    if (= here food) then {
+        do {
+            turn left;
+            turn left;
+            turn left;
+            call canMove
+        }
+    }
+    else {
+        do {
+            call canMove
+        }
+    }
+}
+else {
+    if (= here food) then {
+        do {
+            pickup;
+            turn left;
+            turn left;
+            turn left;
+            call canMove
+        }
+    }
+    else {
+        do {
+            nop
+        }
+    }
+}

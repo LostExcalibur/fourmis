@@ -97,21 +97,15 @@ let comp_condition cond c =
 
 let rec comp_expression exp =
     match exp with
-        | Ast.Do(commandes_l,_) ->
-                let rec aux l =
-                    match l with
-                        |[] -> ()
-                        |(commande,_)::q -> comp_command commande ; aux q
-                in
-                aux (commandes_l)
+        | Ast.Do(commande,_) -> comp_command commande
         | Ast.IfThenElse((cond,_),(exp1,_),(exp2,_)) -> 
                         let c = !i in i := c + 3;
                         comp_condition cond c;
                         fprintf oc "label_%d:\n" c;
-                        comp_expression exp1;
+                        List.iter comp_expression (List.map fst exp1);
                         fprintf oc "  Goto label_%d\n" (c+2);
                         fprintf oc "label_%d:\n" (c+1);
-                        comp_expression exp2;
+                        List.iter comp_expression (List.map fst exp2);
                         fprintf oc "  Goto label_%d\n" (c+2);
                         fprintf oc "label_%d:\n" (c+2)
             
@@ -121,7 +115,7 @@ let rec comp_expression exp =
                         fprintf oc "label_%d:\n" c;
                         comp_condition cond (c+1);
                         fprintf oc "label_%d:\n" (c+1);
-                        comp_expression exp;
+                        List.iter comp_expression (List.map fst exp);
                         fprintf oc "  Goto label_%d\n" c;
                         fprintf oc "label_%d:\n" (c+2)
         | Ast.Macro((nom, _), (liste, _)) -> begin 
