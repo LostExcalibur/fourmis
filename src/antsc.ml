@@ -11,9 +11,38 @@ let write_file filename = (* Ceci est un exemple. *)
   write_command "Goto start";
   close_out oc
 
-let i = ref 0
+type macro = string * (Ast.expression list)
 
+
+let i = ref 0
+let macros: macro list ref = ref [] 
 let oc = open_out "cervo.brain"
+
+
+let macro_existe (m: string) : bool = 
+    let rec parcours l = match l with 
+        [] -> false
+        | (nom, _)::q -> nom = m || (parcours q)
+    in parcours !macros
+
+
+let ajouter_macro (m: macro) = 
+    match m with 
+    | (nom, _) when macro_existe nom -> failwith "Macro déjà définie"
+    | _ -> macros := (m)::(!macros) 
+
+
+let trouver_macro (m: string) : macro = 
+    let rec parcours l = match l with 
+        | [] -> failwith "BaTaMakroExistePa"
+        | (nom, liste)::q -> if nom = m then (nom, liste) else parcours q
+    in parcours !macros
+
+
+let unwrap_expr (e: Ast.expression CodeMap.Span.located) : Ast.expression = 
+    match e with 
+    | (expr, _) -> expr 
+
 
 let comp_direction dir =
     match dir with
@@ -54,8 +83,6 @@ let comp_command commande =
                 incr i
         | Ast.Mark(i,_) ->          fprintf oc "  Mark %d \n" i
         | Ast.Drop ->               fprintf oc "  Drop \n"
-        | Ast.Label(id,expr) -> fprintf oc "  labellll"
-        | Ast.Goto(id) ->           fprintf oc "  gooo"
 
 
 let comp_condition cond c =
@@ -97,10 +124,13 @@ let rec comp_expression exp =
                         comp_expression exp;
                         fprintf oc "  Goto label_%d\n" c;
                         fprintf oc "label_%d:\n" (c+2)
-
-
-
-
+        | Ast.Macro((nom, _), (liste, _)) -> begin 
+            if macro_existe nom then
+                failwith "Macro déjà définie"
+            else
+                ajouter_macro (nom, (List.map unwrap_expr liste))
+        end
+        | Ast.Call(nom, _) -> if not (macro_existe nom) then failwith "BaTaMakroExistePa" else let (_, instructions) = trouver_macro nom in List.iter comp_expression instructions 
 
 
 let comp_program program =

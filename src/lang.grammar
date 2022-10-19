@@ -5,13 +5,13 @@ type command =
 	| Pickup	pickup
 	| Mark 		mark <int>
 	| Drop		drop
-	| Label		<ident> : <expression>
-	| Goto		goto <ident>
 
 type expression =
-	| Do 			{<command*;>}
-	| IfThenElse	if (<condition>) then <expression> else <expression>
-	| While			while (<condition>) do <expression>
+	| Do 			<command*;>
+	| IfThenElse	if (<condition>) then {<expression>} else {<expression>}
+	| While			while (<condition>) do {<expression>}
+	| Macro			macro <ident> = {<expression+;>}
+	| Call			call <ident>
 
 type condition =
 	| Eq		= <direction> <valeur>
