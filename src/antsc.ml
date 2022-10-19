@@ -145,7 +145,6 @@ let comp_program program =
                 aux (expression_l);
                 fprintf oc "  Goto debut\n"
                 
-        |_ -> printf "?"
 
 let process_file filename =
   (* Ouvre le fichier et créé un lexer. *)
