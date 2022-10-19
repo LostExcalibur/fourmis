@@ -71,7 +71,7 @@ let comp_command (commande: Ast.command) (oc: out_channel) : unit =
                 incr i
         | Ast.Mark(i,_) ->          fprintf oc "  Mark %d \n" i
         | Ast.Drop ->               fprintf oc "  Drop \n"
-
+        | Ast.Unmark(i,_) ->        fprintf oc "  Unmark %d \n" i
 
 let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
     match cond with

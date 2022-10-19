@@ -4,6 +4,7 @@ type command =
 	| Turn		turn <lr>
 	| Pickup	pickup
 	| Mark 		mark <int>
+	| Unmark	unmark <int>
 	| Drop		drop
 
 type expression =
