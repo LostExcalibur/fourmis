@@ -1,6 +1,7 @@
 type command =
 	| Nope 		nop
 	| Move		move
+	| Moveelse  moveelse {<expression+;>}
 	| Turn		turn <lr>
 	| Pickup	pickup
 	| Mark 		mark <int>

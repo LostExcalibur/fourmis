@@ -75,11 +75,11 @@ let comp_command commande =
     match commande with
         | Ast.Nope ->               ()
         | Ast.Move ->
-                fprintf oc "  Goto label_%d\nlabel_%d:\n  Move label_%d \n" !i !i !i;
+                fprintf oc "  Move label_%d \n  Goto label_%d\nlabel_%d:\n " !i !i !i;
                 incr i
         | Ast.Turn(direction,_) ->  fprintf oc  "  Turn %s\n" (comp_lr direction)
         | Ast.Pickup ->
-                fprintf oc "  Goto label_%d\nlabel_%d:\n  PickUp label_%d\n" !i !i !i;
+                fprintf oc "  PickUp label_%d\n  Goto label_%d\nlabel_%d:\n" !i !i !i;
                 incr i
         | Ast.Mark(i,_) ->          fprintf oc "  Mark %d \n" i
         | Ast.Drop ->               fprintf oc "  Drop \n"
