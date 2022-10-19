@@ -130,6 +130,7 @@ let rec comp_expression exp =
 let comp_program program =
     match program with
         | Ast.Program(expression_l,_) ->
+                (* TODO : Refactor possible en List.map unwrap_expr puis List.iter comp_expression *)
                 let rec aux l =
                     match l with
                         |[] -> ()
