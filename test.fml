@@ -60,15 +60,91 @@ macro moveTest = {
     moveelse {
         if (random 2) then {
             turn left;
-            turn left
+            if (random 2) then {
+                turn left
+            }
+            else{
+                nop
+            }
         }
         else {
             turn right;
-            turn right
+            if (random 2) then {
+                turn right
+            }
+            else {
+                nop
+            }
         }
     }
 };
 
+
+if (= ahead home) then {
+    call moveTest;
+    drop;
+    turn left;
+    turn left;
+    turn left;
+    call moveTest
+}
+else {
+    if (=leftahead home) then{
+        turn left;
+        call moveTest;
+        drop;
+        turn left;
+        turn left;
+        turn left;
+        call moveTest
+    }
+    else {
+        if (=rightahead home) then {
+            turn right;
+            call moveTest;
+            drop;
+            turn left;
+            turn left;
+            turn left;
+            call moveTest
+        }
+        else {
+            if (=ahead food) then {
+                call moveTest;
+                pickup;
+                turn left;
+                turn left;
+                turn left;
+                call moveTest
+            }
+            else {
+                if (=rightahead food) then {
+                    turn right;
+                    call moveTest;
+                    pickup;
+                    turn left;
+                    turn left;
+                    turn left;
+                    call moveTest
+                }
+                else {
+                    if (=leftahead food) then {
+                        turn left;
+                        call moveTest;
+                        pickup;
+                        turn left;
+                        turn left;
+                        turn left;
+                        call moveTest
+                    }
+                    else {
+                        nop
+                    }
+                }
+            }
+        }
+    }
+};
 drop;
 if (= here food) then {
     pickup;
@@ -147,27 +223,10 @@ else {
         }
     }
 };
-if (= here home) then {
-    drop;
-    if (= here food) then {
-        turn left;
-        turn left;
-        turn left;
-        call moveTest
-    }
-    else {
-        call moveTest
-    }
+if (random 10) then {
+    unmark 0;
+    unmark 1
 }
 else {
-    if (= here food) then {
-        pickup;
-        turn left;
-        turn left;
-        turn left;
-        call moveTest
-    }
-    else {
-        nop
-    }
+    nop
 }

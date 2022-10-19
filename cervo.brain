@@ -1,287 +1,712 @@
 debut:
-  Drop 
-  Sense Here label_0 label_1 Food
+  Sense Ahead label_0 label_1 Home
 label_0:
-  PickUp label_3
-  Goto label_3
+  Move label_3
+  Goto label_4
 label_3:
-  Sense Ahead label_4 label_5 Marker 1
-label_4:
-  Move label_7
-  Goto label_8
-label_7:
-  Flip 2 label_9 label_10
-label_9:
-  Turn Left
-  Turn Left
-  Goto label_11
-label_10:
-  Turn Right
-  Turn Right
-  Goto label_11
-label_11:
-  Goto label_8
-label_8:
-  Mark 0 
-  Unmark 1 
-  Goto label_6
+  Flip 2 label_5 label_6
 label_5:
-  Sense RightAhead label_12 label_13 Marker 1
+  Turn Left
+  Flip 2 label_8 label_9
+label_8:
+  Turn Left
+  Goto label_10
+label_9:
+  Goto label_10
+label_10:
+  Goto label_7
+label_6:
+  Turn Right
+  Flip 2 label_11 label_12
+label_11:
+  Turn Right
+  Goto label_13
 label_12:
-  Turn Right
-  Move label_15
-  Goto label_16
-label_15:
-  Flip 2 label_17 label_18
-label_17:
-  Turn Left
-  Turn Left
-  Goto label_19
-label_18:
-  Turn Right
-  Turn Right
-  Goto label_19
-label_19:
-  Goto label_16
-label_16:
-  Mark 0 
-  Unmark 1 
-  Goto label_14
+  Goto label_13
 label_13:
-  Sense LeftAhead label_20 label_21 Marker 1
-label_20:
+  Goto label_7
+label_7:
+  Goto label_4
+label_4:
+  Drop 
   Turn Left
-  Move label_23
+  Turn Left
+  Turn Left
+  Move label_14
+  Goto label_15
+label_14:
+  Flip 2 label_16 label_17
+label_16:
+  Turn Left
+  Flip 2 label_19 label_20
+label_19:
+  Turn Left
+  Goto label_21
+label_20:
+  Goto label_21
+label_21:
+  Goto label_18
+label_17:
+  Turn Right
+  Flip 2 label_22 label_23
+label_22:
+  Turn Right
   Goto label_24
 label_23:
-  Flip 2 label_25 label_26
-label_25:
-  Turn Left
-  Turn Left
-  Goto label_27
-label_26:
-  Turn Right
-  Turn Right
-  Goto label_27
-label_27:
   Goto label_24
 label_24:
-  Mark 0 
-  Unmark 1 
-  Goto label_22
-label_21:
-  Flip 3 label_28 label_29
-label_28:
-  Turn Left
-  Goto label_30
-label_29:
-  Flip 2 label_31 label_32
-label_31:
-  Turn Right
-  Goto label_33
-label_32:
-  Goto label_33
-label_33:
-  Goto label_30
-label_30:
-  Move label_34
-  Goto label_35
-label_34:
-  Flip 2 label_36 label_37
-label_36:
-  Turn Left
-  Turn Left
-  Goto label_38
-label_37:
-  Turn Right
-  Turn Right
-  Goto label_38
-label_38:
-  Goto label_35
-label_35:
-  Mark 0 
-  Goto label_22
-label_22:
-  Goto label_14
-label_14:
-  Goto label_6
-label_6:
+  Goto label_18
+label_18:
+  Goto label_15
+label_15:
   Goto label_2
 label_1:
-  Sense Ahead label_39 label_40 Marker 0
+  Sense LeftAhead label_25 label_26 Home
+label_25:
+  Turn Left
+  Move label_28
+  Goto label_29
+label_28:
+  Flip 2 label_30 label_31
+label_30:
+  Turn Left
+  Flip 2 label_33 label_34
+label_33:
+  Turn Left
+  Goto label_35
+label_34:
+  Goto label_35
+label_35:
+  Goto label_32
+label_31:
+  Turn Right
+  Flip 2 label_36 label_37
+label_36:
+  Turn Right
+  Goto label_38
+label_37:
+  Goto label_38
+label_38:
+  Goto label_32
+label_32:
+  Goto label_29
+label_29:
+  Drop 
+  Turn Left
+  Turn Left
+  Turn Left
+  Move label_39
+  Goto label_40
 label_39:
-  Move label_42
-  Goto label_43
-label_42:
+  Flip 2 label_41 label_42
+label_41:
+  Turn Left
   Flip 2 label_44 label_45
 label_44:
   Turn Left
-  Turn Left
   Goto label_46
 label_45:
-  Turn Right
-  Turn Right
   Goto label_46
 label_46:
   Goto label_43
-label_43:
-  Mark 1 
-  Unmark 0 
-  Goto label_41
-label_40:
-  Sense RightAhead label_47 label_48 Marker 0
+label_42:
+  Turn Right
+  Flip 2 label_47 label_48
 label_47:
   Turn Right
-  Move label_50
-  Goto label_51
-label_50:
-  Flip 2 label_52 label_53
-label_52:
-  Turn Left
-  Turn Left
-  Goto label_54
-label_53:
-  Turn Right
-  Turn Right
-  Goto label_54
-label_54:
-  Goto label_51
-label_51:
-  Mark 1 
-  Unmark 0 
   Goto label_49
 label_48:
-  Sense LeftAhead label_55 label_56 Marker 0
+  Goto label_49
+label_49:
+  Goto label_43
+label_43:
+  Goto label_40
+label_40:
+  Goto label_27
+label_26:
+  Sense RightAhead label_50 label_51 Home
+label_50:
+  Turn Right
+  Move label_53
+  Goto label_54
+label_53:
+  Flip 2 label_55 label_56
 label_55:
   Turn Left
-  Move label_58
-  Goto label_59
+  Flip 2 label_58 label_59
 label_58:
-  Flip 2 label_60 label_61
-label_60:
   Turn Left
-  Turn Left
-  Goto label_62
-label_61:
-  Turn Right
-  Turn Right
-  Goto label_62
-label_62:
-  Goto label_59
+  Goto label_60
 label_59:
-  Mark 1 
-  Unmark 0 
+  Goto label_60
+label_60:
   Goto label_57
 label_56:
-  Flip 3 label_63 label_64
+  Turn Right
+  Flip 2 label_61 label_62
+label_61:
+  Turn Right
+  Goto label_63
+label_62:
+  Goto label_63
 label_63:
+  Goto label_57
+label_57:
+  Goto label_54
+label_54:
+  Drop 
   Turn Left
+  Turn Left
+  Turn Left
+  Move label_64
   Goto label_65
 label_64:
   Flip 2 label_66 label_67
 label_66:
-  Turn Right
+  Turn Left
+  Flip 2 label_69 label_70
+label_69:
+  Turn Left
+  Goto label_71
+label_70:
+  Goto label_71
+label_71:
   Goto label_68
 label_67:
+  Turn Right
+  Flip 2 label_72 label_73
+label_72:
+  Turn Right
+  Goto label_74
+label_73:
+  Goto label_74
+label_74:
   Goto label_68
 label_68:
   Goto label_65
 label_65:
-  Move label_69
-  Goto label_70
-label_69:
-  Flip 2 label_71 label_72
-label_71:
-  Turn Left
-  Turn Left
-  Goto label_73
-label_72:
-  Turn Right
-  Turn Right
-  Goto label_73
-label_73:
-  Goto label_70
-label_70:
-  Mark 1 
-  Goto label_57
-label_57:
-  Goto label_49
-label_49:
-  Goto label_41
-label_41:
-  Goto label_2
-label_2:
-  Sense Here label_74 label_75 Home
-label_74:
-  Drop 
-  Sense Here label_77 label_78 Food
-label_77:
-  Turn Left
-  Turn Left
-  Turn Left
-  Move label_80
-  Goto label_81
-label_80:
-  Flip 2 label_82 label_83
-label_82:
-  Turn Left
-  Turn Left
-  Goto label_84
-label_83:
-  Turn Right
-  Turn Right
-  Goto label_84
-label_84:
-  Goto label_81
-label_81:
+  Goto label_52
+label_51:
+  Sense Ahead label_75 label_76 Food
+label_75:
+  Move label_78
   Goto label_79
 label_78:
-  Move label_85
-  Goto label_86
+  Flip 2 label_80 label_81
+label_80:
+  Turn Left
+  Flip 2 label_83 label_84
+label_83:
+  Turn Left
+  Goto label_85
+label_84:
+  Goto label_85
 label_85:
-  Flip 2 label_87 label_88
-label_87:
-  Turn Left
-  Turn Left
-  Goto label_89
-label_88:
+  Goto label_82
+label_81:
   Turn Right
-  Turn Right
-  Goto label_89
-label_89:
-  Goto label_86
+  Flip 2 label_86 label_87
 label_86:
+  Turn Right
+  Goto label_88
+label_87:
+  Goto label_88
+label_88:
+  Goto label_82
+label_82:
   Goto label_79
 label_79:
-  Goto label_76
-label_75:
-  Sense Here label_90 label_91 Food
+  PickUp label_89
+  Goto label_89
+label_89:
+  Turn Left
+  Turn Left
+  Turn Left
+  Move label_90
+  Goto label_91
 label_90:
-  PickUp label_93
-  Goto label_93
-label_93:
-  Turn Left
-  Turn Left
-  Turn Left
-  Move label_94
-  Goto label_95
-label_94:
-  Flip 2 label_96 label_97
-label_96:
-  Turn Left
-  Turn Left
-  Goto label_98
-label_97:
-  Turn Right
-  Turn Right
-  Goto label_98
-label_98:
-  Goto label_95
-label_95:
-  Goto label_92
-label_91:
-  Goto label_92
+  Flip 2 label_92 label_93
 label_92:
-  Goto label_76
+  Turn Left
+  Flip 2 label_95 label_96
+label_95:
+  Turn Left
+  Goto label_97
+label_96:
+  Goto label_97
+label_97:
+  Goto label_94
+label_93:
+  Turn Right
+  Flip 2 label_98 label_99
+label_98:
+  Turn Right
+  Goto label_100
+label_99:
+  Goto label_100
+label_100:
+  Goto label_94
+label_94:
+  Goto label_91
+label_91:
+  Goto label_77
 label_76:
+  Sense RightAhead label_101 label_102 Food
+label_101:
+  Turn Right
+  Move label_104
+  Goto label_105
+label_104:
+  Flip 2 label_106 label_107
+label_106:
+  Turn Left
+  Flip 2 label_109 label_110
+label_109:
+  Turn Left
+  Goto label_111
+label_110:
+  Goto label_111
+label_111:
+  Goto label_108
+label_107:
+  Turn Right
+  Flip 2 label_112 label_113
+label_112:
+  Turn Right
+  Goto label_114
+label_113:
+  Goto label_114
+label_114:
+  Goto label_108
+label_108:
+  Goto label_105
+label_105:
+  PickUp label_115
+  Goto label_115
+label_115:
+  Turn Left
+  Turn Left
+  Turn Left
+  Move label_116
+  Goto label_117
+label_116:
+  Flip 2 label_118 label_119
+label_118:
+  Turn Left
+  Flip 2 label_121 label_122
+label_121:
+  Turn Left
+  Goto label_123
+label_122:
+  Goto label_123
+label_123:
+  Goto label_120
+label_119:
+  Turn Right
+  Flip 2 label_124 label_125
+label_124:
+  Turn Right
+  Goto label_126
+label_125:
+  Goto label_126
+label_126:
+  Goto label_120
+label_120:
+  Goto label_117
+label_117:
+  Goto label_103
+label_102:
+  Sense LeftAhead label_127 label_128 Food
+label_127:
+  Turn Left
+  Move label_130
+  Goto label_131
+label_130:
+  Flip 2 label_132 label_133
+label_132:
+  Turn Left
+  Flip 2 label_135 label_136
+label_135:
+  Turn Left
+  Goto label_137
+label_136:
+  Goto label_137
+label_137:
+  Goto label_134
+label_133:
+  Turn Right
+  Flip 2 label_138 label_139
+label_138:
+  Turn Right
+  Goto label_140
+label_139:
+  Goto label_140
+label_140:
+  Goto label_134
+label_134:
+  Goto label_131
+label_131:
+  PickUp label_141
+  Goto label_141
+label_141:
+  Turn Left
+  Turn Left
+  Turn Left
+  Move label_142
+  Goto label_143
+label_142:
+  Flip 2 label_144 label_145
+label_144:
+  Turn Left
+  Flip 2 label_147 label_148
+label_147:
+  Turn Left
+  Goto label_149
+label_148:
+  Goto label_149
+label_149:
+  Goto label_146
+label_145:
+  Turn Right
+  Flip 2 label_150 label_151
+label_150:
+  Turn Right
+  Goto label_152
+label_151:
+  Goto label_152
+label_152:
+  Goto label_146
+label_146:
+  Goto label_143
+label_143:
+  Goto label_129
+label_128:
+  Goto label_129
+label_129:
+  Goto label_103
+label_103:
+  Goto label_77
+label_77:
+  Goto label_52
+label_52:
+  Goto label_27
+label_27:
+  Goto label_2
+label_2:
+  Drop 
+  Sense Here label_153 label_154 Food
+label_153:
+  PickUp label_156
+  Goto label_156
+label_156:
+  Sense Ahead label_157 label_158 Marker 1
+label_157:
+  Move label_160
+  Goto label_161
+label_160:
+  Flip 2 label_162 label_163
+label_162:
+  Turn Left
+  Flip 2 label_165 label_166
+label_165:
+  Turn Left
+  Goto label_167
+label_166:
+  Goto label_167
+label_167:
+  Goto label_164
+label_163:
+  Turn Right
+  Flip 2 label_168 label_169
+label_168:
+  Turn Right
+  Goto label_170
+label_169:
+  Goto label_170
+label_170:
+  Goto label_164
+label_164:
+  Goto label_161
+label_161:
+  Mark 0 
+  Unmark 1 
+  Goto label_159
+label_158:
+  Sense RightAhead label_171 label_172 Marker 1
+label_171:
+  Turn Right
+  Move label_174
+  Goto label_175
+label_174:
+  Flip 2 label_176 label_177
+label_176:
+  Turn Left
+  Flip 2 label_179 label_180
+label_179:
+  Turn Left
+  Goto label_181
+label_180:
+  Goto label_181
+label_181:
+  Goto label_178
+label_177:
+  Turn Right
+  Flip 2 label_182 label_183
+label_182:
+  Turn Right
+  Goto label_184
+label_183:
+  Goto label_184
+label_184:
+  Goto label_178
+label_178:
+  Goto label_175
+label_175:
+  Mark 0 
+  Unmark 1 
+  Goto label_173
+label_172:
+  Sense LeftAhead label_185 label_186 Marker 1
+label_185:
+  Turn Left
+  Move label_188
+  Goto label_189
+label_188:
+  Flip 2 label_190 label_191
+label_190:
+  Turn Left
+  Flip 2 label_193 label_194
+label_193:
+  Turn Left
+  Goto label_195
+label_194:
+  Goto label_195
+label_195:
+  Goto label_192
+label_191:
+  Turn Right
+  Flip 2 label_196 label_197
+label_196:
+  Turn Right
+  Goto label_198
+label_197:
+  Goto label_198
+label_198:
+  Goto label_192
+label_192:
+  Goto label_189
+label_189:
+  Mark 0 
+  Unmark 1 
+  Goto label_187
+label_186:
+  Flip 3 label_199 label_200
+label_199:
+  Turn Left
+  Goto label_201
+label_200:
+  Flip 2 label_202 label_203
+label_202:
+  Turn Right
+  Goto label_204
+label_203:
+  Goto label_204
+label_204:
+  Goto label_201
+label_201:
+  Move label_205
+  Goto label_206
+label_205:
+  Flip 2 label_207 label_208
+label_207:
+  Turn Left
+  Flip 2 label_210 label_211
+label_210:
+  Turn Left
+  Goto label_212
+label_211:
+  Goto label_212
+label_212:
+  Goto label_209
+label_208:
+  Turn Right
+  Flip 2 label_213 label_214
+label_213:
+  Turn Right
+  Goto label_215
+label_214:
+  Goto label_215
+label_215:
+  Goto label_209
+label_209:
+  Goto label_206
+label_206:
+  Mark 0 
+  Goto label_187
+label_187:
+  Goto label_173
+label_173:
+  Goto label_159
+label_159:
+  Goto label_155
+label_154:
+  Sense Ahead label_216 label_217 Marker 0
+label_216:
+  Move label_219
+  Goto label_220
+label_219:
+  Flip 2 label_221 label_222
+label_221:
+  Turn Left
+  Flip 2 label_224 label_225
+label_224:
+  Turn Left
+  Goto label_226
+label_225:
+  Goto label_226
+label_226:
+  Goto label_223
+label_222:
+  Turn Right
+  Flip 2 label_227 label_228
+label_227:
+  Turn Right
+  Goto label_229
+label_228:
+  Goto label_229
+label_229:
+  Goto label_223
+label_223:
+  Goto label_220
+label_220:
+  Mark 1 
+  Unmark 0 
+  Goto label_218
+label_217:
+  Sense RightAhead label_230 label_231 Marker 0
+label_230:
+  Turn Right
+  Move label_233
+  Goto label_234
+label_233:
+  Flip 2 label_235 label_236
+label_235:
+  Turn Left
+  Flip 2 label_238 label_239
+label_238:
+  Turn Left
+  Goto label_240
+label_239:
+  Goto label_240
+label_240:
+  Goto label_237
+label_236:
+  Turn Right
+  Flip 2 label_241 label_242
+label_241:
+  Turn Right
+  Goto label_243
+label_242:
+  Goto label_243
+label_243:
+  Goto label_237
+label_237:
+  Goto label_234
+label_234:
+  Mark 1 
+  Unmark 0 
+  Goto label_232
+label_231:
+  Sense LeftAhead label_244 label_245 Marker 0
+label_244:
+  Turn Left
+  Move label_247
+  Goto label_248
+label_247:
+  Flip 2 label_249 label_250
+label_249:
+  Turn Left
+  Flip 2 label_252 label_253
+label_252:
+  Turn Left
+  Goto label_254
+label_253:
+  Goto label_254
+label_254:
+  Goto label_251
+label_250:
+  Turn Right
+  Flip 2 label_255 label_256
+label_255:
+  Turn Right
+  Goto label_257
+label_256:
+  Goto label_257
+label_257:
+  Goto label_251
+label_251:
+  Goto label_248
+label_248:
+  Mark 1 
+  Unmark 0 
+  Goto label_246
+label_245:
+  Flip 3 label_258 label_259
+label_258:
+  Turn Left
+  Goto label_260
+label_259:
+  Flip 2 label_261 label_262
+label_261:
+  Turn Right
+  Goto label_263
+label_262:
+  Goto label_263
+label_263:
+  Goto label_260
+label_260:
+  Move label_264
+  Goto label_265
+label_264:
+  Flip 2 label_266 label_267
+label_266:
+  Turn Left
+  Flip 2 label_269 label_270
+label_269:
+  Turn Left
+  Goto label_271
+label_270:
+  Goto label_271
+label_271:
+  Goto label_268
+label_267:
+  Turn Right
+  Flip 2 label_272 label_273
+label_272:
+  Turn Right
+  Goto label_274
+label_273:
+  Goto label_274
+label_274:
+  Goto label_268
+label_268:
+  Goto label_265
+label_265:
+  Mark 1 
+  Goto label_246
+label_246:
+  Goto label_232
+label_232:
+  Goto label_218
+label_218:
+  Goto label_155
+label_155:
+  Flip 10 label_275 label_276
+label_275:
+  Unmark 0 
+  Unmark 1 
+  Goto label_277
+label_276:
+  Goto label_277
+label_277:
   Goto debut
