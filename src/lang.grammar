@@ -1,7 +1,7 @@
 type command =
 	| Nope 		nop
 	| Move		move
-	| Turn		turn <direction>
+	| Turn		turn <lr>
 	| Pickup	pickup
 	| Mark 		mark <int>
 	| Drop		drop
@@ -18,6 +18,10 @@ type condition =
 	| Neq		!= <direction> <valeur>
 	| Random	random <int>
 
+type lr =
+	| TurnL				left
+	| TurnR				right
+
 type valeur = 
 	| Friend			friend		
 	| Foe				foe
@@ -32,8 +36,8 @@ type valeur =
 
 type direction =
 	| Here				here
-	| Left				left
-	| Right				right
+	| Left				leftahead
+	| Right				rightahead
 	| Ahead				ahead
 
 

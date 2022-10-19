@@ -18,9 +18,16 @@ let oc = open_out "cervo.brain"
 let comp_direction dir =
     match dir with
         | Ast.Here ->               "Here"
-        | Ast.Left ->               "Left"
-        | Ast.Right ->              "Right"
+        | Ast.Left ->               "LeftAhead"
+        | Ast.Right ->              "RightAhead"
         | Ast.Ahead ->              "Ahead"
+
+
+let comp_lr dir =
+    match dir with
+        | Ast.TurnL ->              "Left"
+        | Ast.TurnR ->              "Right"
+ 
 
 let comp_valeur valeur =
     match valeur with
@@ -39,26 +46,26 @@ let comp_command commande =
     match commande with
         | Ast.Nope ->               ()
         | Ast.Move ->
-                fprintf oc "label_%d:\n\tMove label_%d \n" !i !i;
+                fprintf oc "  Goto label_%d\nlabel_%d:\n  Move label_%d \n" !i !i !i;
                 incr i
-        | Ast.Turn(direction,_) ->  fprintf oc  "\tTurn %s\n" (comp_direction direction)
+        | Ast.Turn(direction,_) ->  fprintf oc  "  Turn %s\n" (comp_lr direction)
         | Ast.Pickup ->
-                fprintf oc "label_%d:\n\tPickUp label_%d\n" !i !i;
+                fprintf oc "  Goto label_%d\nlabel_%d:\n  PickUp label_%d\n" !i !i !i;
                 incr i
-        | Ast.Mark(i,_) ->          fprintf oc "\tMark %d \n" i
-        | Ast.Drop ->               fprintf oc "\tDrop \n"
-        | Ast.Label(id,expr) -> fprintf oc "\tlabellll"
-        | Ast.Goto(id) ->           fprintf oc "\tgooo"
+        | Ast.Mark(i,_) ->          fprintf oc "  Mark %d \n" i
+        | Ast.Drop ->               fprintf oc "  Drop \n"
+        | Ast.Label(id,expr) -> fprintf oc "  labellll"
+        | Ast.Goto(id) ->           fprintf oc "  gooo"
 
 
 let comp_condition cond c =
     match cond with
         | Ast.Eq((direction,_),(valeur,_)) ->       
-            fprintf oc "\tSense %s label_%d label_%d %s\n" (comp_direction direction) (c) (c+1) (comp_valeur valeur)
+            fprintf oc "  Sense %s label_%d label_%d %s\n" (comp_direction direction) (c) (c+1) (comp_valeur valeur)
         | Ast.Neq((direction,_),(valeur,_)) ->
-            fprintf oc "\tSense %s label_%d label_%d %s\n" (comp_direction direction) (c+1) (c) (comp_valeur valeur)
+            fprintf oc "  Sense %s label_%d label_%d %s\n" (comp_direction direction) (c+1) (c) (comp_valeur valeur)
         | Ast.Random(p,_) ->
-                        fprintf oc "\tFlip %d label_%d label_%d\n" (p) (c) (c+1)
+                        fprintf oc "  Flip %d label_%d label_%d\n" (p) (c) (c+1)
 
 
 let rec comp_expression exp =
@@ -75,19 +82,20 @@ let rec comp_expression exp =
                         comp_condition cond c;
                         fprintf oc "label_%d:\n" c;
                         comp_expression exp1;
-                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "  Goto label_%d\n" (c+2);
                         fprintf oc "label_%d:\n" (c+1);
                         comp_expression exp2;
-                        fprintf oc "\tGoto label_%d\n" (c+2);
+                        fprintf oc "  Goto label_%d\n" (c+2);
                         fprintf oc "label_%d:\n" (c+2)
             
         | Ast.While((cond,_),(exp,_)) ->
                         let c = !i in i := c + 3;
+                        fprintf oc "  Goto label_%d\n" c;
                         fprintf oc "label_%d:\n" c;
                         comp_condition cond (c+1);
                         fprintf oc "label_%d:\n" (c+1);
                         comp_expression exp;
-                        fprintf oc "\tGoto label_%d\n" c;
+                        fprintf oc "  Goto label_%d\n" c;
                         fprintf oc "label_%d:\n" (c+2)
 
 
@@ -103,7 +111,9 @@ let comp_program program =
                         |[] -> ()
                         |(exp,_)::q -> comp_expression exp ; aux q
                 in
-                aux (expression_l)
+                fprintf oc "debut:\n";
+                aux (expression_l);
+                fprintf oc "  Goto debut\n"
                 
         |_ -> printf "?"
 

@@ -1,24 +1,29 @@
-	Turn Left
-	Sense Left label_0 label_1 Friend
+debut:
+  Turn Left
+  Sense LeftAhead label_0 label_1 Friend
 label_0:
+  Goto label_3
 label_3:
-	Move label_3 
-	Goto label_2
+  Move label_3 
+  Goto label_2
 label_1:
-	Goto label_2
+  Goto label_2
 label_2:
-	Flip 2 label_4 label_5
+  Flip 2 label_4 label_5
 label_4:
+  Goto label_7
 label_7:
-	PickUp label_7
-	Goto label_6
+  PickUp label_7
+  Goto label_6
 label_5:
-	Drop 
-	Goto label_6
+  Drop 
+  Goto label_6
 label_6:
+  Goto label_8
 label_8:
-	Sense Right label_10 label_9 Foe
+  Sense RightAhead label_10 label_9 Foe
 label_9:
-	Turn Right
-	Goto label_8
+  Turn Right
+  Goto label_8
 label_10:
+  Goto debut
