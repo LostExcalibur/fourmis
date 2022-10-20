@@ -118,6 +118,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
                     |[] -> ()
                     |(exp,_)::q -> comp_expression exp oc; aux q
             in 
+            fprintf oc "  Goto label_%d\n" !i;
             fprintf oc "label_%d:\n" !i;
             incr i;
             aux (exp1);
@@ -144,11 +145,10 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
         
         | Ast.While((cond,span1),(exp,span2)) -> 
             let c = !i in
-            incr i;
             fprintf oc "  Goto label_%d\n" c;
             fprintf oc "label_%d:\n" c;
+            incr i;
             comp_expression (Ast.IfThenElse((cond,span1),(exp,span2),([(Ast.Break (c,span1),span1)],span1))) oc;
-            fprintf oc "label_%d:\n" c;
         
         | Ast.Macro((nom, _), (liste, _)) -> begin 
             if macro_existe nom then
