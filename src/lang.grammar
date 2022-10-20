@@ -15,6 +15,7 @@ type expression =
 	| While			while (<condition>) do {<expression+;>}
 	| Macro			macro <ident> = {<expression+;>}
 	| Call			call <ident>
+	| Break			break <int>
 
 type condition =
 	| Eq		= <direction> <valeur>
@@ -22,6 +23,7 @@ type condition =
 	| Random	random <int>
 	| Et		et (<condition>) (<condition>)
 	| Ou		ou (<condition>) (<condition>)
+	| True		true
 
 type lr =
 	| TurnL				left

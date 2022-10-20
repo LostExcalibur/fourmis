@@ -79,18 +79,8 @@ macro moveTest = {
     }
 };
 
-
-if (= ahead home) then {
-    call moveTest;
-    drop;
-    turn left;
-    turn left;
-    turn left;
-    call moveTest
-}
-else {
-    if (=leftahead home) then{
-        turn left;
+if (random 2) then {
+    if (= ahead home) then {
         call moveTest;
         drop;
         turn left;
@@ -99,8 +89,8 @@ else {
         call moveTest
     }
     else {
-        if (=rightahead home) then {
-            turn right;
+        if (=leftahead home) then{
+            turn left;
             call moveTest;
             drop;
             turn left;
@@ -109,17 +99,17 @@ else {
             call moveTest
         }
         else {
-            if (=ahead food) then {
+            if (=rightahead home) then {
+                turn right;
                 call moveTest;
-                pickup;
+                drop;
                 turn left;
                 turn left;
                 turn left;
                 call moveTest
             }
             else {
-                if (=rightahead food) then {
-                    turn right;
+                if (=ahead food) then {
                     call moveTest;
                     pickup;
                     turn left;
@@ -128,8 +118,8 @@ else {
                     call moveTest
                 }
                 else {
-                    if (=leftahead food) then {
-                        turn left;
+                    if (=rightahead food) then {
+                        turn right;
                         call moveTest;
                         pickup;
                         turn left;
@@ -138,95 +128,258 @@ else {
                         call moveTest
                     }
                     else {
-                        nop
+                        if (=leftahead food) then {
+                            turn left;
+                            call moveTest;
+                            pickup;
+                            turn left;
+                            turn left;
+                            turn left;
+                            call moveTest
+                        }
+                        else {
+                            nop
+                        }
                     }
                 }
             }
         }
-    }
-};
-drop;
-if (= here food) then {
-    pickup;
-    if (= ahead marker 1) then {
-        call moveTest;
-        mark 0;
-        unmark 1
-    }
-    else {
-        if (= rightahead marker 1) then {
-            turn right;
+    };
+    drop;
+    if (= here food) then {
+        pickup;
+        if (= ahead marker 1) then {
             call moveTest;
             mark 0;
             unmark 1
         }
         else {
-            if (= leftahead marker 1) then {
-                turn left;
+            if (= rightahead marker 1) then {
+                turn right;
                 call moveTest;
                 mark 0;
                 unmark 1
             }
             else {
-                if (random 3) then {
-                    turn left
+                if (= leftahead marker 1) then {
+                    turn left;
+                    call moveTest;
+                    mark 0;
+                    unmark 1
                 }
                 else {
-                    if (random 2) then {
-                        turn right
+                    if (random 3) then {
+                        turn left
                     }
                     else {
-                        nop
-                    }
-                };
-                call moveTest;
-                mark 0
+                        if (random 2) then {
+                            turn right
+                        }
+                        else {
+                            nop
+                        }
+                    };
+                    call moveTest;
+                    mark 0
+                }
             }
         }
     }
-}
-else {
-    if (= ahead marker 0) then {
-        call moveTest;
-        mark 1;
-        unmark 0
-    }
     else {
-        if (= rightahead marker 0) then {
-            turn right;
+        if (= ahead marker 0) then {
             call moveTest;
             mark 1;
             unmark 0
         }
         else {
-            if (= leftahead marker 0) then {
-                turn left;
+            if (= rightahead marker 0) then {
+                turn right;
                 call moveTest;
                 mark 1;
                 unmark 0
             }
             else {
-                if (random 3) then {
-                    turn left
+                if (= leftahead marker 0) then {
+                    turn left;
+                    call moveTest;
+                    mark 1;
+                    unmark 0
                 }
                 else {
-                    if (random 2) then {
-                        turn right
+                    if (random 3) then {
+                        turn left
                     }
                     else {
-                        nop
-                    }
-                };
+                        if (random 2) then {
+                            turn right
+                        }
+                        else {
+                            nop
+                        }
+                    };
+                    call moveTest;
+                    mark 1
+                }
+            }
+        }
+    };
+    if (random 10) then {
+        unmark 0;
+        unmark 1
+    }
+    else {
+        nop
+    }
+}
+else {
+    if (= ahead home) then {
+        call moveTest;
+        drop;
+        turn left;
+        turn left;
+        turn left;
+        call moveTest
+    }
+    else {
+        if (=leftahead home) then{
+            turn left;
+            call moveTest;
+            drop;
+            turn left;
+            turn left;
+            turn left;
+            call moveTest
+        }
+        else {
+            if (=rightahead home) then {
+                turn right;
                 call moveTest;
-                mark 1
+                drop;
+                turn left;
+                turn left;
+                turn left;
+                call moveTest
+            }
+            else {
+                if (=ahead food) then {
+                    call moveTest;
+                    pickup;
+                    turn left;
+                    turn left;
+                    turn left;
+                    call moveTest
+                }
+                else {
+                    if (=rightahead food) then {
+                        turn right;
+                        call moveTest;
+                        pickup;
+                        turn left;
+                        turn left;
+                        turn left;
+                        call moveTest
+                    }
+                    else {
+                        if (=leftahead food) then {
+                            turn left;
+                            call moveTest;
+                            pickup;
+                            turn left;
+                            turn left;
+                            turn left;
+                            call moveTest
+                        }
+                        else {
+                            nop
+                        }
+                    }
+                }
+            }
+        }
+    };
+    drop;
+    if (= here food) then {
+        pickup;
+        if (= ahead marker 5) then {
+            call moveTest;
+            mark 4;
+            unmark 5
+        }
+        else {
+            if (= rightahead marker 5) then {
+                turn right;
+                call moveTest;
+                mark 4;
+                unmark 5
+            }
+            else {
+                if (= leftahead marker 5) then {
+                    turn left;
+                    call moveTest;
+                    mark 4;
+                    unmark 5
+                }
+                else {
+                    if (random 3) then {
+                        turn left
+                    }
+                    else {
+                        if (random 2) then {
+                            turn right
+                        }
+                        else {
+                            nop
+                        }
+                    };
+                    call moveTest;
+                    mark 4
+                }
             }
         }
     }
-};
-if (random 10) then {
-    unmark 0;
-    unmark 1
-}
-else {
-    nop
+    else {
+        if (= ahead marker 4) then {
+            call moveTest;
+            mark 5;
+            unmark 4
+        }
+        else {
+            if (= rightahead marker 4) then {
+                turn right;
+                call moveTest;
+                mark 5;
+                unmark 4
+            }
+            else {
+                if (= leftahead marker 4) then {
+                    turn left;
+                    call moveTest;
+                    mark 5;
+                    unmark 4
+                }
+                else {
+                    if (random 3) then {
+                        turn left
+                    }
+                    else {
+                        if (random 2) then {
+                            turn right
+                        }
+                        else {
+                            nop
+                        }
+                    };
+                    call moveTest;
+                    mark 5
+                }
+            }
+        }
+    };
+    if (random 10) then {
+        unmark 4;
+        unmark 5
+    }
+    else {
+        nop
+    }
 }
