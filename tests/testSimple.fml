@@ -1,0 +1,7 @@
+turn right;
+move;
+turn left;
+pickup;
+mark 2;
+nop;
+drop

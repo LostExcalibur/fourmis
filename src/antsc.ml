@@ -63,16 +63,16 @@ let comp_command (commande: Ast.command) (oc: out_channel) : unit =
     match commande with
         | Ast.Nope ->               ()
         | Ast.Move ->
-                fprintf oc "  Move label_%d \n  Goto label_%d\nlabel_%d:\n " !i !i !i;
+                fprintf oc "  Move label_%d\n  Goto label_%d\nlabel_%d:\n" !i !i !i;
                 incr i
 
         | Ast.Turn(direction,_) ->  fprintf oc  "  Turn %s\n" (comp_lr direction)
         | Ast.Pickup ->
                 fprintf oc "  PickUp label_%d\n  Goto label_%d\nlabel_%d:\n" !i !i !i;
                 incr i
-        | Ast.Mark(i,_) ->          fprintf oc "  Mark %d \n" i
-        | Ast.Drop ->               fprintf oc "  Drop \n"
-        | Ast.Unmark(i,_) ->        fprintf oc "  Unmark %d \n" i
+        | Ast.Mark(i,_) ->          fprintf oc "  Mark %d\n" i
+        | Ast.Drop ->               fprintf oc "  Drop\n"
+        | Ast.Unmark(i,_) ->        fprintf oc "  Unmark %d\n" i
 
 let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
     match cond with

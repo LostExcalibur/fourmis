@@ -50,6 +50,13 @@ clean:
 	rm -f $(PARSER_FILES)
 	$(MAKE) --directory parser_generator clean
 
+test:
+	./antsc tests/testSimple.fml tests/testSimple.brain
+	diff tests/testSimple.brain tests/veriftestSimple.brain
+	rm tests/testSimple.brain
+	./antsc tests/testif.fml tests/testIf.brain
+	rm tests/testIf.brain
+
 uninstall_deps:
 	$(MAKE) --directory parser_generator uninstall
 
