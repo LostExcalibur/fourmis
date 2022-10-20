@@ -2,6 +2,6 @@
   (package antsc)
   (name antsc)
   (public_name antsc)
-  (libraries unicode code-map)
+  (libraries unicode code-map str)
   (flags (:standard -warn-error -a+31))
 )
