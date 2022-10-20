@@ -1,0 +1,45 @@
+macro guard={
+    move
+};
+
+macro worker={
+    turn right
+};  
+
+
+if (!= ahead home) then {
+    call guard
+}
+else {
+    turn left;
+    if (!= ahead home) then {
+        call guard
+    }
+    else {
+        turn left;
+        if (!= ahead home) then {
+            call guard
+        }
+        else {
+            turn left;
+            if (!= ahead home) then {
+                call guard
+            }
+            else {
+                turn left;
+                if (!= ahead home) then {
+                    call guard
+                }
+                else {
+                    turn left;
+                    if (!= ahead home) then {
+                        call guard
+                    }
+                    else {
+                        call worker
+                    }
+                }
+            }
+        }
+    }
+}

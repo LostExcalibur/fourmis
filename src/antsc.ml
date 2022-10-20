@@ -141,42 +141,13 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
                         fprintf oc "label_%d:\n" (c+2)
             end
         
-        | Ast.While((Ast.True,_),(exp,_)) ->
-            let rec aux l =
-                match l with
-                    |[] -> ()
-                    |(exp,_)::q -> comp_expression exp oc; aux q
-            in 
+        | Ast.While((cond,span1),(exp,span2)) -> 
             let c = !i in
             incr i;
             fprintf oc "  Goto label_%d\n" c;
             fprintf oc "label_%d:\n" c;
-            aux (exp);
-            fprintf oc "  Goto label_%d\n" c
-        
-        | Ast.While((Ast.Et((cond1,span1),(cond2,span2)),_),(exp,span3)) -> 
-            let c = !i in
-            incr i;
-            fprintf oc "  Goto label_%d\n" !i;
-            comp_expression (Ast.While((Ast.True,span1),((Ast.IfThenElse((Ast.Et((cond1,span1),(cond2,span2)),span1),([(Ast.Do (Ast.Nope,span1),span1)],span1),([(Ast.Break (c,span1),span1)],span1)),span1)::exp,span3))) oc;
+            comp_expression (Ast.IfThenElse((cond,span1),(exp,span2),([(Ast.Break (c,span1),span1)],span1))) oc;
             fprintf oc "label_%d:\n" c;
-        
-        | Ast.While((Ast.Ou((cond1,span1),(cond2,span2)),_),(exp,span3)) -> 
-            let c = !i in
-            incr i;
-            fprintf oc "  Goto label_%d\n" !i;
-            comp_expression (Ast.While((Ast.True,span1),((Ast.IfThenElse((Ast.Ou((cond1,span1),(cond2,span2)),span1),([(Ast.Do (Ast.Nope,span1),span1)],span1),([(Ast.Break (c,span1),span1)],span1)),span1)::exp,span3))) oc;
-            fprintf oc "label_%d:\n" c;
-    
-        | Ast.While((cond,_),(exp,_)) ->
-                        let c = !i in i := c + 3;
-                        fprintf oc "  Goto label_%d\n" c;
-                        fprintf oc "label_%d:\n" c;
-                        comp_condition cond (c+1) oc;
-                        fprintf oc "label_%d:\n" (c+1);
-                        List.iter (fun x -> comp_expression x oc) (List.map fst exp);
-                        fprintf oc "  Goto label_%d\n" c;
-                        fprintf oc "label_%d:\n" (c+2)
         
         | Ast.Macro((nom, _), (liste, _)) -> begin 
             if macro_existe nom then
