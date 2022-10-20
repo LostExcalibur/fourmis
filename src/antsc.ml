@@ -147,10 +147,12 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
                     |[] -> ()
                     |(exp,_)::q -> comp_expression exp oc; aux q
             in 
-            fprintf oc "label_%d:\n" !i;
+            let c = !i in
+            incr i;
+            fprintf oc "  Goto label_%d\n" c;
+            fprintf oc "label_%d:\n" c;
             aux (exp);
-            fprintf oc "  Goto label_%d\n" !i;
-            incr i
+            fprintf oc "  Goto label_%d\n" c
         
         | Ast.While((Ast.Et((cond1,span1),(cond2,span2)),_),(exp,span3)) -> 
             let c = !i in
