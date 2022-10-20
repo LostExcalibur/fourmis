@@ -1,29 +1,29 @@
 type command =
-	| Nope 		nop
-	| Move		move
-	| Turn		turn <lr>
-	| Pickup	pickup
-	| Mark 		mark <int>
-	| Unmark	unmark <int>
-	| Drop		drop
+	| Nope 				nop
+	| Move				move
+	| Turn				turn <lr>
+	| Pickup			pickup
+	| Mark 				mark <int>
+	| Unmark			unmark <int>
+	| Drop				drop
 
 type expression =
-	| Do 			<command>
-	| MoveElse  	moveelse {<expression+;>}
-	| PickElse  	pickelse {<expression+;>}
-	| IfThenElse	if (<condition>) then {<expression+;>} else {<expression+;>}
-	| While			while (<condition>) do {<expression+;>}
-	| Macro			macro <ident> = {<expression+;>}
-	| Call			call <ident>
-	| Break			break <int>
+	| Do 				<command>
+	| MoveElse  		moveelse {<expression+;>}
+	| PickElse  		pickelse {<expression+;>}
+	| IfThenElse		if (<condition>) then {<expression+;>} else {<expression+;>}
+	| While				while (<condition>) do {<expression+;>}
+	| Macro				macro <ident> = {<expression+;>}
+	| Call				call <ident>
+	| Break				break <int>
 
 type condition =
-	| Eq		= <direction> <valeur>
-	| Neq		!= <direction> <valeur>
-	| Random	random <int>
-	| Et		et (<condition>) (<condition>)
-	| Ou		ou (<condition>) (<condition>)
-	| True		true
+	| Eq				= <direction> <valeur>
+	| Neq				!= <direction> <valeur>
+	| Random			random <int>
+	| Et				et (<condition>) (<condition>)
+	| Ou				ou (<condition>) (<condition>)
+	| True				true
 
 type lr =
 	| TurnL				left
