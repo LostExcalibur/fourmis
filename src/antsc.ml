@@ -122,7 +122,6 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             fprintf oc "label_%d:\n" !i;
             incr i;
             aux (exp1);
-            fprintf oc "  Goto label_%d\n" !i
         
         | Ast.IfThenElse((Ast.Et((cond1,span1),(cond2,span2)),_),(exp1,span3),(exp2,span4)) -> 
             comp_expression (Ast.IfThenElse((cond1,span1),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2),(exp2,span4))) oc
@@ -149,6 +148,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             fprintf oc "label_%d:\n" c;
             incr i;
             comp_expression (Ast.IfThenElse((cond,span1),(exp,span2),([(Ast.Break (c,span1),span1)],span1))) oc;
+            fprintf oc "  Goto label_%d\n" c
         
         | Ast.Macro((nom, _), (liste, _)) -> begin 
             if macro_existe nom then
@@ -215,12 +215,12 @@ let rec post_print_labels (data: (string * string) list) : unit =
 
 let post_remplacer_labels (data: (string * string) list) (filename_out: string) (filename_opti: string) : unit = 
   let ic = open_in filename_out in
-  let content = In_channel.really_input_string ic (in_channel_length ic) in 
+  let content = really_input_string ic (in_channel_length ic) in 
   close_in ic; 
   let rec aux l s = match l with
       [] -> ()
     | (nom1, nom2)::q -> s := post_replace (nom1 ^ "$") nom2 !s (* ; printf "%s\n\n" !s *); aux q s
-  and contenu = ref (post_replace (post_regexp_string data) "" (Option.get content)) and out_file = open_out filename_opti in begin
+  and contenu = ref (post_replace (post_regexp_string data) "" content) and out_file = open_out filename_opti in begin
     (* post_print_labels (List.rev data); *)
     aux (List.rev data) contenu;
     fprintf out_file "%s" !contenu;
