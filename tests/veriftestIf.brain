@@ -1,0 +1,9 @@
+debut:
+  Sense LeftAhead label_0 label_1 Friend
+label_0:
+  Drop
+  Goto label_2
+label_1:
+  Goto label_2
+label_2:
+  Goto debut

@@ -1,0 +1,12 @@
+debut:
+  Turn Right
+  Move label_0
+  Goto label_0
+label_0:
+  Turn Left
+  PickUp label_1
+  Goto label_1
+label_1:
+  Mark 2
+  Drop
+  Goto debut

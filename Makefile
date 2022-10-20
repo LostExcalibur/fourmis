@@ -55,6 +55,7 @@ test:
 	diff tests/testSimple.brain tests/veriftestSimple.brain
 	rm tests/testSimple.brain
 	./antsc tests/testif.fml tests/testIf.brain
+	diff tests/testIf.brain tests/veriftestIf.brain
 	rm tests/testIf.brain
 
 uninstall_deps:
