@@ -81,6 +81,7 @@ let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
             fprintf oc "  Sense %s label_%d label_%d %s\n" (comp_direction direction) (c+1) (c) (comp_valeur valeur)
         | Ast.Random(p,_) ->
                         fprintf oc "  Flip %d label_%d label_%d\n" (p) (c) (c+1)
+        | _ -> failwith "cas impossible"
 
 
 let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
@@ -108,6 +109,12 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
                 fprintf oc "  Goto label_%d\n" (c+1);
                 fprintf oc "label_%d:\n" (c+1);
             end
+        
+        | Ast.IfThenElse((Ast.Et((cond1,span1),(cond2,span2)),_),(exp1,span3),(exp2,span4)) -> 
+            comp_expression (Ast.IfThenElse((cond1,span1),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2),(exp2,span4))) oc
+        
+        | Ast.IfThenElse((Ast.Ou((cond1,span1),(cond2,span2)),_),(exp1,span3),(exp2,span4)) -> 
+                comp_expression (Ast.IfThenElse((cond1,span1),(exp1,span3),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2))) oc
 
         | Ast.IfThenElse((cond,_),(exp1,_),(exp2,_)) ->
             let comp_with_out = (fun x -> comp_expression x oc) in begin

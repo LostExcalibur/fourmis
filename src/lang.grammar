@@ -20,6 +20,8 @@ type condition =
 	| Eq		= <direction> <valeur>
 	| Neq		!= <direction> <valeur>
 	| Random	random <int>
+	| Et		et (<condition>) (<condition>)
+	| Ou		ou (<condition>) (<condition>)
 
 type lr =
 	| TurnL				left
