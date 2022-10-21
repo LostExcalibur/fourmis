@@ -82,6 +82,9 @@ macro <nom de la macro> = {
 ```
 Et, pour appeler une macro précédemment définie, il suffit d’utiliser l’instruction `call <nom de la macro>`.
 
+
+On peut d’ailleurs définir ces macros dans un autre fichier, par exemple dans `macros.fml`. Ensuite, dans notre fichier principal `strategie.fml`, il suffit de le commencer par `include macros`, et on a alors accès à toutes les macros.
+
 ## Exemple
 Un exemple de code fml peut se trouver à l’adresse `exemple.fml` dans le dossier principal. Le code ressemble à ceci :
 ```
@@ -178,6 +181,10 @@ et on remplace le `Goto label_a` par le `Flip ...` (fonctionne aussi avec un `Se
 
 
 
+On va chercher la nourriture, puis on la ramène à la maison. Ensuite, on gagne.
 # Fonctionnement de la stratégie
 
-On va chercher la nourriture, puis on la ramène à la maison. Ensuite, on gagne.
+Notre stratégie fonctionne en divisant les fourmis en groupes, chacuns ayant une tache spécifique :
+- Les fourmis qui démarrent à la bordure de la base obtiennent le rôle de "gardien". Leur tâche est de créer un cordon de sécurité autour de la base pour empêcher les ennemis d’entrer. Elles doivent également récupérer la nourriture que les travailleuses et les voleuses vont poser devant la base.
+- Les fourmis travailleusent vont chercher des sources de nourriture, puis les ramènes à la base.
+- Les fourmis voleusent vont chercher la base ennemi, et s’en servent comme source de nourriture.
