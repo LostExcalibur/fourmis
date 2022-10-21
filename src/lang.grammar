@@ -6,6 +6,7 @@ type command =
 	| Mark 				mark <int>
 	| Unmark			unmark <int>
 	| Drop				drop
+	| Wait				wait <int>
 
 type expression =
 	| Do 				<command>

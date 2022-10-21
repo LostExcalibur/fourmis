@@ -83,6 +83,11 @@ let comp_command (commande: Ast.command) (oc: out_channel) : unit =
         | Ast.Mark(i,_) ->          fprintf oc "  Mark %d\n" i
         | Ast.Drop ->               fprintf oc "  Drop\n"
         | Ast.Unmark(i,_) ->        fprintf oc "  Unmark %d\n" i
+        | Ast.Wait(n,_) ->
+            for j=1 to n do
+                fprintf oc "  Turn Left\n";
+                fprintf oc "  Turn Right\n"
+            done
 
 let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
     match cond with
