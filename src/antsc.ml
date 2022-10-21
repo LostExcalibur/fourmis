@@ -181,7 +181,7 @@ let post_replace (motif: string) (nouveau: string) : string -> string =
     Str.global_replace (Str.regexp motif) nouveau 
 
 let post_trouver_labels_inutiles (nom: string) : (string * string) list  = 
-    let ic = open_in nom and label_regex = Str.regexp "\([a-zA-Z][a-zA-Z0-9_]*\):" and goto_regex = Str.regexp "Goto \([a-zA-Z][a-zA-Z0-9_]*\)" and result = ref [] in
+  let ic = open_in nom and label_regex = Str.regexp "\\([a-zA-Z][a-zA-Z0-9_]*\\):" and goto_regex = Str.regexp "Goto \\([a-zA-Z][a-zA-Z0-9_]*\\)" and result = ref [] in
     try while true do
         let ligne = input_line ic in 
         (* On a un label de défini, on regarde si la prochaine ligne est un goto *)
@@ -191,27 +191,28 @@ let post_trouver_labels_inutiles (nom: string) : (string * string) list  =
             if Str.string_match goto_regex prochaine_ligne 2 then
                 result := (label_dp, matched_group 1 prochaine_ligne)::!result
     done; 
+    close_in ic;
     !result
     with
-    End_of_file -> !result
-
-let rec post_mauvais_label (nom: string) (data: (string * string) list) : bool = match data with
-    | [] -> false
-    | (n, _)::q -> n = nom || post_mauvais_label nom q 
+      End_of_file -> close_in ic; !result
 
 
 let post_regexp_string (data: (string * string) list) : string = 
   let rec aux l = match l with
     [] -> ""
-  | (label1_nom1, label1_nom2)::[label2_nom1, label2_nom2] -> label1_nom1 ^ ":\n  Goto " ^ label1_nom2 ^ "\n\|" ^ label2_nom1 ^ ":\n  Goto " ^ label2_nom2 ^ "\n"
-  | (nom1, nom2)::q -> nom1 ^ ":\n  Goto " ^ nom2 ^ "\n\|" ^ (aux q)
-  in "\(" ^ (aux data) ^ "\)"
+    | (label1_nom1, label1_nom2)::[label2_nom1, label2_nom2] -> label1_nom1 ^ ":\n.*" ^ label1_nom2 ^ "\n\\|" ^ label2_nom1 ^ ":\n.*" ^ label2_nom2 ^ "\n"
+    | (nom1, nom2)::q -> nom1 ^ ":\n.*" ^ nom2 ^ "\n\\|" ^ (aux q)
+  in "\\(" ^ (aux data) ^ "\\)" 
 
 let rec post_print_labels (data: (string * string) list) : unit = 
   match data with
     [] -> ()
   | (nom1, nom2)::q -> printf "%s:\n  %s\n" nom1 nom2; post_print_labels q
 
+(* Cette fonction est cruciale pour être sur du bon fonctionnement de l'optimisation, elle permet de résoudre les problèmes de cycles de remplacement de labels *)
+let rec post_replace_dest (nom1: string) (nom2: string) (data: (string * string) list) : (string * string) list = match data with 
+    [] -> []
+  | (n1, n2)::q -> (n1, if n2 = nom1 then nom2 else n2)::(post_replace_dest nom1 nom2 q)
 
 let post_remplacer_labels (data: (string * string) list) (filename_out: string) (filename_opti: string) : unit = 
   let ic = open_in filename_out in
@@ -219,7 +220,7 @@ let post_remplacer_labels (data: (string * string) list) (filename_out: string) 
   close_in ic; 
   let rec aux l s = match l with
       [] -> ()
-    | (nom1, nom2)::q -> s := post_replace (nom1 ^ "$") nom2 !s (* ; printf "%s\n\n" !s *); aux q s
+    | (nom1, nom2)::q -> s := post_replace (nom1 ^ "\\($\\| \\)") (nom2 ^ " ") !s(*; printf "%s\n\n" !s*); aux (post_replace_dest nom1 nom2 q) s
   and contenu = ref (post_replace (post_regexp_string data) "" content) and out_file = open_out filename_opti in begin
     (* post_print_labels (List.rev data); *)
     aux (List.rev data) contenu;
