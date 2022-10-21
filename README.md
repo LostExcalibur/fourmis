@@ -2,7 +2,7 @@
 
 ## Installation du compilateur
 
-Pour pouvoir faire fonctionner le compilateur, il faut avoir installé :
+Poru pouvoir faire fonctionner le compilateur, il faut avoir installé :
 - OCaml, version 4.08 ou plus
 - Le système de construction `dune` version 1.11 ou plus (installable avec `opam install dune`)
 - `ocp-indent` et `ocamlfind` (installable avec `opam install ocp-indent ocamlfind`)
