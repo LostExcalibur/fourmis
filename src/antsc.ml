@@ -180,6 +180,11 @@ let process_file (filename: string) (output: string) : unit =
 let post_replace (motif: string) (nouveau: string) : string -> string = 
     Str.global_replace (Str.regexp motif) nouveau 
 
+(* Cette fonction parcours le fichier et recherche les labels inutiles, c'est à dire de la forme : 
+ * label_x:
+ *   Goto label_y
+ * On peut ainsi remplacer toutes les occurences de label_x par label_y, et supprimer ces deux lignes du fichier 
+ * *)
 let post_trouver_labels_inutiles (nom: string) : (string * string) list  = 
   let ic = open_in nom and label_regex = Str.regexp "\\([a-zA-Z][a-zA-Z0-9_]*\\):" and goto_regex = Str.regexp "Goto \\([a-zA-Z][a-zA-Z0-9_]*\\)" and result = ref [] in
     try while true do
@@ -195,7 +200,6 @@ let post_trouver_labels_inutiles (nom: string) : (string * string) list  =
     !result
     with
       End_of_file -> close_in ic; !result
-
 
 let post_regexp_string (data: (string * string) list) : string = 
   let rec aux l = match l with
@@ -214,17 +218,52 @@ let rec post_replace_dest (nom1: string) (nom2: string) (data: (string * string)
     [] -> []
   | (n1, n2)::q -> (n1, if n2 = nom1 then nom2 else n2)::(post_replace_dest nom1 nom2 q)
 
-let post_remplacer_labels (data: (string * string) list) (filename_out: string) (filename_opti: string) : unit = 
-  let ic = open_in filename_out in
+let post_remplacer_labels_inutiles (data: (string * string) list) (filename_in: string) (filename_out: string) : unit = 
+  let ic = open_in filename_in in
   let content = really_input_string ic (in_channel_length ic) in 
   close_in ic; 
   let rec aux l s = match l with
       [] -> ()
     | (nom1, nom2)::q -> s := post_replace (nom1 ^ "\\($\\| \\)") (nom2 ^ " ") !s(*; printf "%s\n\n" !s*); aux (post_replace_dest nom1 nom2 q) s
-  and contenu = ref (post_replace (post_regexp_string data) "" content) and out_file = open_out filename_opti in begin
+  and contenu = ref (post_replace (post_regexp_string data) "" content) and out_file = open_out filename_out in begin
     (* post_print_labels (List.rev data); *)
     aux (List.rev data) contenu;
     fprintf out_file "%s" !contenu;
+    close_out out_file
+  end
+
+(* Cette fonction parcours le fichier pour trouver les labels de la forme 
+ * label_x:
+ *   Flip ... ou Sense ...
+ * En effet, comme ces deux instructions vont effectuer un branchement dans tous les cas, on peut inline label_x et remplacer les occurences de Goto label_x par l'instruction 
+ * Cependant on ne peut pas supprimer la définition du label, à cause des Move par exemple *)
+let post_trouver_labels_inline (nom: string) : (string * string) list = 
+  let ic = open_in nom and label_regex = Str.regexp "\\([a-zA-Z][a-zA-Z0-9_]*\\):" and flip_sense_regex = Str.regexp "\\(Flip\\|Sense\\).*" and result = ref [] in
+    try while true do
+        let ligne = input_line ic in 
+        (* On a un label de défini, on regarde si la prochaine ligne est un Sense ou un Flip *)
+        if Str.string_match label_regex ligne 0 then
+            let prochaine_ligne = input_line ic and label_dp = (matched_group 1 ligne) in
+            (* On a un label suivi d'un Flip ou d'un Sense, on va pouvoir opti *)
+            if Str.string_match flip_sense_regex prochaine_ligne 2 then
+                result := (label_dp, matched_string prochaine_ligne)::!result
+    done; 
+    close_in ic;
+    !result
+    with
+      End_of_file -> close_in ic; !result
+
+let post_inline_labels (data: (string * string) list) (filename_in: string) (filename_out: string) : unit = 
+ let ic = open_in filename_in in
+  let content = ref (really_input_string ic (in_channel_length ic)) in 
+  close_in ic; 
+  let rec aux l s = match l with
+      [] -> ()
+    | (nom1, nom2)::q -> s := post_replace ("Goto " ^ nom1 ^ "\\($\\| \\)") nom2 !s(*; printf "%s\n\n" !s*); aux q s
+  and out_file = open_out filename_out in begin
+    (* post_print_labels (List.rev data); *)
+    aux data content;
+    fprintf out_file "%s" !content;
     close_out out_file
   end
 
@@ -234,16 +273,17 @@ let _ =
   (* On commence par lire le nom du fichier à compiler passé en paramètre. *)
   if argc < 2 then begin
     (* Pas de fichier... *)
-    eprintf "Usage :\n\t<%s> entree sortie\n" Sys.argv.(0);
+    eprintf "Usage :\n\t%s <entree> [sortie] [sortie_opti]\n" Sys.argv.(0);
+    eprintf "\tSi sortie ou sortie_opti ne sont pas précisés, leurs valeurs par défaut sont respectivement cervo.brain et opti.brain\n"; 
     exit 1
   end else begin
     try
       (* On compile le fichier. *)
-      let name = if argc = 3 then Sys.argv.(2) else "cervo.brain" in
-      process_file Sys.argv.(1) name;
-      let post_test_filename = name in
-      let labels = post_trouver_labels_inutiles post_test_filename in
-      post_remplacer_labels labels post_test_filename "opti.brain";
+      let name_out = if argc >= 3 then Sys.argv.(2) else "cervo.brain" and name_opti = if argc > 3 then Sys.argv.(3) else "opti.brain" in
+      process_file Sys.argv.(1) name_out;
+      let labels = post_trouver_labels_inutiles name_out in
+      post_remplacer_labels_inutiles labels name_out name_opti; 
+      post_inline_labels (post_trouver_labels_inline name_opti) name_opti "opti_v2.brain"
 
     with
     | Lexer.Error (e, span) ->
