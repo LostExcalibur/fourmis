@@ -289,7 +289,7 @@ let process_cli (input_file: string ref) (output_file: string ref) (opti_file: s
     in let add_input (filename: string) : unit = match !input_file with  
         "" -> input_file := filename
       | _ -> failwith "" 
-    in Arg.parse speclist add_input "Test"
+    in Arg.parse speclist add_input "Usage :\n\t%s <entree> [-o sortie | -O sortie_opti]\n"
 
 (* Le point de départ du compilateur. *)
 let _ =
