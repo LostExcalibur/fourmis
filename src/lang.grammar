@@ -17,6 +17,7 @@ type expression =
 	| Macro				macro <ident> = {<expression+;>}
 	| Call				call <ident>
 	| Break				break <int>
+	| Include			include <ident>
 
 type condition =
 	| Eq				= <direction> <valeur>

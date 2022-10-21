@@ -2,9 +2,12 @@ open Printf
 open Str
 
 type macro = string * (Ast.expression list)
+type file_include = (string * CodeMap.Span.t) 
 
 let i = ref 0
 let macros: macro list ref = ref [] 
+let includes: file_include list ref = ref []
+
 
 let ouvrir_in_check (filename: string) : in_channel =
   try open_in filename
@@ -17,12 +20,21 @@ let ouvrir_out_check (filename: string) : out_channel =
   | Sys_error(e) -> eprintf "Ne peut pas ouvrir le fichier \"%s\" %s" filename e; exit 1 
 
 
+let fichier_deja_include (filename: string) : bool = 
+  let rec parcours l = match l with
+      [] -> false
+    | (nom, _)::q -> nom = filename || (parcours q)
+  in parcours !includes
+
+let ajouter_include (incl: file_include) : unit = 
+  includes := incl::(!includes) 
+
+
 let macro_existe (m: string) : bool = 
     let rec parcours l = match l with 
         [] -> false
         | (nom, _)::q -> nom = m || (parcours q)
     in parcours !macros
-
 
 let ajouter_macro (m: macro) : unit = 
     match m with 
@@ -40,7 +52,18 @@ let trouver_macro (m: string) : macro =
 let unwrap_expr (e: Ast.expression CodeMap.Span.located) : Ast.expression = 
     match e with 
     | (expr, _) -> expr 
-
+                
+let process_include (filename: string) : Ast.expression CodeMap.Span.located list = 
+  if fichier_deja_include filename then (
+    eprintf "Erreur : fichier %s déjà include\n" filename;
+    exit 1
+  );
+  let file = ouvrir_in_check filename in
+  let lexer = Lexer.of_channel file in
+  (* Parse le fichier. *)
+  let (Program(liste, _), _) = Parser.parse_program lexer in
+  liste
+ 
 
 let comp_direction (dir: Ast.direction) : string =
     match dir with
@@ -168,11 +191,16 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
         
         | Ast.Macro((nom, _), (liste, _)) -> begin 
             if macro_existe nom then
-                failwith "Macro déjà définie"
+                eprintf "Erreur : macro déjà définie : %s\n" nom
             else
                 ajouter_macro (nom, (List.map unwrap_expr liste))
         end
-        | Ast.Call(nom, _) -> if not (macro_existe nom) then failwith "BaTaMakroExistePa" else let (_, instructions) = trouver_macro nom in List.iter (fun x -> comp_expression x oc) instructions 
+        | Ast.Call(nom, _) -> if not (macro_existe nom) then failwith "BaTaMakroExistePa" else let (_, instructions) = trouver_macro nom in List.iter (fun x -> comp_expression x oc) instructions
+        | Ast.Include(nom_fichier, endroit) -> begin
+          let expressions = process_include (nom_fichier ^ ".fml") in
+          ajouter_include (nom_fichier ^ ".fml", endroit);
+          List.iter (fun x -> comp_expression x oc) (List.map unwrap_expr expressions) 
+        end
 
 
 let comp_program (program: Ast.program) (oc: out_channel) : unit =
@@ -181,7 +209,7 @@ let comp_program (program: Ast.program) (oc: out_channel) : unit =
                 fprintf oc "debut:\n";
                 List.iter (fun x -> comp_expression x oc) (List.map unwrap_expr expression_l);
                 fprintf oc "  Goto debut\n"
-                
+ 
 
 let process_file (filename: string) (output: string) : unit =
   (* Ouvre le fichier et créé un lexer. *)
