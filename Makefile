@@ -56,16 +56,19 @@ clean:
 	rm -f $(PARSER_FILES)
 	$(MAKE) --directory parser_generator clean
 
-test:
-	./antsc tests/testSimple.fml tests/testSimple.brain
+test: antsc
+	./antsc tests/testSimple.fml -o tests/testSimple.brain
 	diff tests/testSimple.brain tests/veriftestSimple.brain
 	rm tests/testSimple.brain
-	./antsc tests/testIf.fml tests/testIf.brain
+	./antsc tests/testIf.fml -o tests/testIf.brain
 	diff tests/testIf.brain tests/veriftestIf.brain
 	rm tests/testIf.brain
-	./antsc tests/testWhile.fml tests/testWhile.brain
+	./antsc tests/testWhile.fml -o tests/testWhile.brain
 	diff tests/testWhile.brain tests/veriftestWhile.brain
 	rm tests/testWhile.brain
+	./antsc tests/testInclude.fml -o tests/testInclude.brain -I tests/
+	diff tests/testInclude.brain tests/veriftestInclude.brain
+	rm tests/testInclude.brain
 	echo "Pas d’erreurs, totu va bien !"
 
 uninstall_deps:

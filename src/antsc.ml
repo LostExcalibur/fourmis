@@ -12,12 +12,12 @@ let includes: file_include list ref = ref []
 let ouvrir_in_check (filename: string) : in_channel =
   try open_in filename
   with
-  | Sys_error(e) -> eprintf "Ne peut pas ouvrir le fichier \"%s\" %s" filename e; exit 1 
+  | Sys_error(e) -> eprintf "Ne peut pas ouvrir le fichier \"%s\" %s\n" filename e; exit 1 
 
 let ouvrir_out_check (filename: string) : out_channel = 
   try open_out filename
   with
-  | Sys_error(e) -> eprintf "Ne peut pas ouvrir le fichier \"%s\" %s" filename e; exit 1 
+  | Sys_error(e) -> eprintf "Ne peut pas ouvrir le fichier \"%s\" %s\n" filename e; exit 1 
 
 
 let fichier_deja_include (filename: string) : bool = 
@@ -107,7 +107,7 @@ let comp_command (commande: Ast.command) (oc: out_channel) : unit =
         | Ast.Drop ->               fprintf oc "  Drop\n"
         | Ast.Unmark(i,_) ->        fprintf oc "  Unmark %d\n" i
         | Ast.Wait(n,_) ->
-            for j=1 to n do
+            for _ = 1 to n do
                 fprintf oc "  Turn Left\n";
                 fprintf oc "  Turn Right\n"
             done
@@ -123,13 +123,13 @@ let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
         | _ -> failwith "cas impossible"
 
 
-let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
+let rec comp_expression (exp: Ast.expression) (oc: out_channel) (include_dir: string) : unit =
     match exp with
         | Ast.Break(c,_) -> fprintf oc "  Goto label_%d\n" c 
         | Ast.Do(commande,_) -> comp_command commande oc
 
         | Ast.MoveElse(exp_l,_) ->
-            let comp_with_out = (fun x -> comp_expression x oc) in begin
+          let comp_with_out = (fun x -> comp_expression x oc include_dir) in begin
                 let c = !i in i := c + 2;
                 fprintf oc "  Move label_%d\n" c;
                 fprintf oc "  Goto label_%d\n" (c+1);
@@ -140,7 +140,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             end
 
         | Ast.PickElse(exp_l,_) ->
-            let comp_with_out = (fun x -> comp_expression x oc) in begin
+          let comp_with_out = (fun x -> comp_expression x oc include_dir) in begin
                 let c = !i in i := c + 2;
                 fprintf oc "  Pickup label_%d\n" c;
                 fprintf oc "  Goto label_%d\n" (c+1);
@@ -154,7 +154,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             let rec aux l =
                 match l with
                     |[] -> ()
-                    |(exp,_)::q -> comp_expression exp oc; aux q
+                    |(exp,_)::q -> comp_expression exp oc include_dir; aux q
             in 
             fprintf oc "  Goto label_%d\n" !i;
             fprintf oc "label_%d:\t\t\t fin if true\n" !i;
@@ -162,13 +162,13 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             aux (exp1);
         
         | Ast.IfThenElse((Ast.Et((cond1,span1),(cond2,span2)),_),(exp1,span3),(exp2,span4)) -> 
-            comp_expression (Ast.IfThenElse((cond1,span1),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2),(exp2,span4))) oc
+          comp_expression (Ast.IfThenElse((cond1,span1),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2),(exp2,span4))) oc include_dir
         
         | Ast.IfThenElse((Ast.Ou((cond1,span1),(cond2,span2)),_),(exp1,span3),(exp2,span4)) -> 
-            comp_expression (Ast.IfThenElse((cond1,span1),(exp1,span3),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2))) oc
+          comp_expression (Ast.IfThenElse((cond1,span1),(exp1,span3),([(Ast.IfThenElse((cond2,span2),(exp1,span3),(exp2,span4)),span2)],span2))) oc include_dir
 
         | Ast.IfThenElse((cond,_),(exp1,_),(exp2,_)) ->
-            let comp_with_out = (fun x -> comp_expression x oc) in begin
+          let comp_with_out = (fun x -> comp_expression x oc include_dir) in begin
                 let c = !i in i := c + 3;
                         comp_condition cond c oc;
                         fprintf oc "label_%d:\n" c;
@@ -185,7 +185,7 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             fprintf oc "  Goto label_%d\n" c;
             fprintf oc "label_%d:\n" c;
             i:=!i+2;
-            comp_expression (Ast.IfThenElse((cond,span1),(exp,span2),([(Ast.Break (c+1,span1),span1)],span1))) oc;
+            comp_expression (Ast.IfThenElse((cond,span1),(exp,span2),([(Ast.Break (c+1,span1),span1)],span1))) oc include_dir;
             fprintf oc "  Goto label_%d\n" c;
             fprintf oc "label_%d:\n" (c+1)
         
@@ -195,23 +195,23 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             else
                 ajouter_macro (nom, (List.map unwrap_expr liste))
         end
-        | Ast.Call(nom, _) -> if not (macro_existe nom) then failwith "BaTaMakroExistePa" else let (_, instructions) = trouver_macro nom in List.iter (fun x -> comp_expression x oc) instructions
+        | Ast.Call(nom, _) -> if not (macro_existe nom) then failwith "BaTaMakroExistePa" else let (_, instructions) = trouver_macro nom in List.iter (fun x -> comp_expression x oc include_dir) instructions
         | Ast.Include(nom_fichier, endroit) -> begin
-          let expressions = process_include (nom_fichier ^ ".fml") in
-          ajouter_include (nom_fichier ^ ".fml", endroit);
-          List.iter (fun x -> comp_expression x oc) (List.map unwrap_expr expressions) 
+            let expressions = process_include (include_dir ^ nom_fichier ^ ".fml") in
+            ajouter_include (include_dir ^ nom_fichier ^ ".fml", endroit);
+          List.iter (fun x -> comp_expression x oc include_dir) (List.map unwrap_expr expressions) 
         end
 
 
-let comp_program (program: Ast.program) (oc: out_channel) : unit =
+let comp_program (program: Ast.program) (oc: out_channel) (include_dir: string) : unit =
     match program with
         | Ast.Program(expression_l,_) ->
                 fprintf oc "debut:\n";
-                List.iter (fun x -> comp_expression x oc) (List.map unwrap_expr expression_l);
+                List.iter (fun x -> comp_expression x oc include_dir) (List.map unwrap_expr expression_l);
                 fprintf oc "  Goto debut\n"
  
 
-let process_file (filename: string) (output: string) : unit =
+let process_file (filename: string) (output: string) (include_dir: string) : unit =
   (* Ouvre le fichier et créé un lexer. *)
   let file = ouvrir_in_check filename in
     let lexer = Lexer.of_channel file in
@@ -219,7 +219,7 @@ let process_file (filename: string) (output: string) : unit =
     let (program, _) = Parser.parse_program lexer in
     (* printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program); *)
   let out = ouvrir_out_check output in  
-  comp_program program out;
+  comp_program program out include_dir;
   close_out out
 
 let post_replace (motif: string) (nouveau: string) : string -> string = 
@@ -317,9 +317,10 @@ let print_usage () : unit =
   eprintf "\tSi ni sortie ni sortie_opti ne sont précisés, sortie est mise à cervo.brain et on n'optimise pas\n"; 
   exit 1
 
-let process_cli (input_file: string ref) (output_file: string ref) (opti_file: string ref) : unit = 
+let process_cli (input_file: string ref) (output_file: string ref) (opti_file: string ref) (include_dir: string ref) : unit = 
   let speclist = [("-o", Arg.Set_string output_file, "Nom du fichier de sortie");
-                    ("-O", Arg.Set_string opti_file, "Optimise le code, et définit le nom du fichier de sortie")] 
+                  ("-O", Arg.Set_string opti_file, "Optimise le code, et définit le nom du fichier de sortie");
+                  ("-I", Arg.Set_string include_dir, "Définit le dossier où rechercher les fichiers à include")] 
     in let add_input (filename: string) : unit = match !input_file with  
         "" -> input_file := filename
       | _ -> failwith "" 
@@ -327,8 +328,8 @@ let process_cli (input_file: string ref) (output_file: string ref) (opti_file: s
 
 (* Le point de départ du compilateur. *)
 let _ =
-  let name_in = ref "" and name_out = ref "" and name_opti = ref "" in
-  process_cli name_in name_out name_opti;    
+  let name_in = ref "" and name_out = ref "" and name_opti = ref "" and include_dir = ref "" in
+  process_cli name_in name_out name_opti include_dir; 
   if !name_in = "" then ( 
     eprintf "Pas de fichier d'entrée fourni\n"; print_usage ();
   );
@@ -344,7 +345,7 @@ let _ =
     name_out := !name_opti; 
 
   try
-    process_file !name_in !name_out;
+    process_file !name_in !name_out !include_dir;
     if !name_opti <> "" then (
     let labels = post_trouver_labels_inutiles !name_out in
     post_remplacer_labels_inutiles labels !name_out !name_opti; 

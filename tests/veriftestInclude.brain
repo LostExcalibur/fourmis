@@ -1,0 +1,5 @@
+debut:
+  Move label_0
+  Goto label_0
+label_0:
+  Goto debut
