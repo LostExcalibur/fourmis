@@ -8,7 +8,7 @@ let i = ref 0
 let macros: macro list ref = ref [] 
 let includes: file_include list ref = ref []
 
-
+(* Fonctions utilitaires pour rajouter des messages d'erreur utilisables... *)
 let ouvrir_in_check (filename: string) : in_channel =
   try open_in filename
   with
@@ -19,7 +19,7 @@ let ouvrir_out_check (filename: string) : out_channel =
   with
   | Sys_error(e) -> eprintf "Ne peut pas ouvrir le fichier \"%s\" %s\n" filename e; exit 1 
 
-
+(* Fonction pour vérifier si un fichier a déjà été include *)
 let fichier_deja_include (filename: string) : bool = 
   let rec parcours l = match l with
       [] -> false
@@ -30,29 +30,31 @@ let ajouter_include (incl: file_include) : unit =
   includes := incl::(!includes) 
 
 
+(* Fonction pour vérifier si une macro a déjà été définie *)
 let macro_existe (m: string) : bool = 
     let rec parcours l = match l with 
         [] -> false
         | (nom, _)::q -> nom = m || (parcours q)
     in parcours !macros
 
-let ajouter_macro (m: macro) : unit = 
-    match m with 
-    | (nom, _) when macro_existe nom -> failwith "Macro déjà définie"
-    | _ -> macros := (m)::(!macros) 
+(* On a voulu rajouter un check pour interdire les macros récursives, mais il faudrait encore traverser un arbre donc on a pas eu le temps... ^^' *)
+let ajouter_macro (m: macro) : unit = match m with 
+  | (nom, _) when macro_existe nom -> eprintf "La macro \"%s\" est déjà définie\n" nom; exit 1
+    | (_, _) -> macros := (m)::(!macros)
 
-
+(* Cette fonction renvoit la macro correspondant au nom passé, et fail si elle n'existe pas *)
 let trouver_macro (m: string) : macro = 
     let rec parcours l = match l with 
-        | [] -> failwith "BaTaMakroExistePa"
+      | [] -> eprintf "La macro \"%s\" n'existe pas\n" m; exit 1
         | (nom, liste)::q -> if nom = m then (nom, liste) else parcours q
     in parcours !macros
 
-
+(* Fonction utilitaire pour se débarasser des Span.located *)
 let unwrap_expr (e: Ast.expression CodeMap.Span.located) : Ast.expression = 
     match e with 
     | (expr, _) -> expr 
-                
+
+(* Cette fonction vérifie que le fichier n'a pas déjà été include, pour empêcher les cycles *)
 let process_include (filename: string) : Ast.expression CodeMap.Span.located list = 
   if fichier_deja_include filename then (
     eprintf "Erreur : fichier %s déjà include\n" filename;
@@ -92,6 +94,8 @@ let comp_valeur (valeur: Ast.valeur) : string =
         | Ast.Home ->               "Home"
         | Ast.FoeHome ->            "FoeHome"
 
+
+(* Seul détail, on a rajouté un check pour interdire la compilation de mark 100, qui serait incorrect *)
 let comp_command (commande: Ast.command) (oc: out_channel) : unit =
     match commande with
         | Ast.Nope ->               ()
@@ -222,8 +226,11 @@ let process_file (filename: string) (output: string) (include_dir: string) : uni
   comp_program program out include_dir;
   close_out out
 
+
+(* Fonction utilitaire currifiée pour remplacer toutes les occurences d'un motif par un autre *)
 let post_replace (motif: string) (nouveau: string) : string -> string = 
     Str.global_replace (Str.regexp motif) nouveau 
+
 
 (* Cette fonction parcours le fichier et recherche les labels inutiles, c'est à dire de la forme : 
  * label_x:
@@ -246,6 +253,11 @@ let post_trouver_labels_inutiles (nom: string) : (string * string) list  =
     with
       End_of_file -> close_in ic; !result
 
+
+(* Regexp, est ce que quelqu'un va essayer de lire cette fonction ?
+ * Dans le doute, ça renvoit une regexp qui match tous les éléments de data, 
+ * avec le premier élément de chaque paire étant un nom de label et le deuxième
+ * le code à ce label *)
 let post_regexp_string (data: (string * string) list) : string = 
   let rec aux l = match l with
     [] -> ""
@@ -253,25 +265,30 @@ let post_regexp_string (data: (string * string) list) : string =
     | (nom1, nom2)::q -> nom1 ^ ":\n.*" ^ nom2 ^ "\n\\|" ^ (aux q)
   in "\\(" ^ (aux data) ^ "\\)" 
 
+(* 
 let rec post_print_labels (data: (string * string) list) : unit = 
   match data with
     [] -> ()
   | (nom1, nom2)::q -> printf "%s:\n  %s\n" nom1 nom2; post_print_labels q
+*)
+
 
 (* Cette fonction est cruciale pour être sur du bon fonctionnement de l'optimisation, elle permet de résoudre les problèmes de cycles de remplacement de labels *)
 let rec post_replace_dest (nom1: string) (nom2: string) (data: (string * string) list) : (string * string) list = match data with 
     [] -> []
   | (n1, n2)::q -> (n1, if n2 = nom1 then nom2 else n2)::(post_replace_dest nom1 nom2 q)
 
+(* Cette fonction remplace les labels inutiles par le label équivalent, et supprime les définitions de labels inutiles.
+ * Le paramètre data contient des paires de la forme (label_x, label_y), telles que les occurences de label_x doivent être remplacées par label_y *)
 let post_remplacer_labels_inutiles (data: (string * string) list) (filename_in: string) (filename_out: string) : unit = 
   let ic = ouvrir_in_check filename_in in
   let content = really_input_string ic (in_channel_length ic) in 
   close_in ic; 
+  (* fonction auxiliaire qui va passer sur tous les labels et les remplacer par l'élément correspondant *)
   let rec aux l s = match l with
       [] -> ()
-    | (nom1, nom2)::q -> s := post_replace (nom1 ^ "\\($\\| \\)") (nom2 ^ " ") !s(*; printf "%s\n\n" !s*); aux (post_replace_dest nom1 nom2 q) s
+    | (nom1, nom2)::q -> s := post_replace (nom1 ^ "\\($\\| \\)") (nom2 ^ " ") !s; aux (post_replace_dest nom1 nom2 q) s
   and contenu = ref (post_replace (post_regexp_string data) "" content) and out_file = ouvrir_out_check filename_out in begin
-    (* post_print_labels (List.rev data); *)
     aux (List.rev data) contenu;
     fprintf out_file "%s" !contenu;
     close_out out_file
@@ -298,15 +315,15 @@ let post_trouver_labels_inline (nom: string) : (string * string) list =
     with
       End_of_file -> close_in ic; !result
 
+(* Cette fonction inline les labels qui peuvent l'être, de la même manière que post_remplacer_labels_inutiles *)
 let post_inline_labels (data: (string * string) list) (filename_in: string) (filename_out: string) : unit = 
  let ic = ouvrir_in_check filename_in in
   let content = ref (really_input_string ic (in_channel_length ic)) in 
   close_in ic; 
   let rec aux l s = match l with
       [] -> ()
-    | (nom1, nom2)::q -> s := post_replace ("Goto " ^ nom1 ^ "\\($\\| \\)") nom2 !s(*; printf "%s\n\n" !s*); aux q s
+    | (nom1, nom2)::q -> s := post_replace ("Goto " ^ nom1 ^ "\\($\\| \\)") nom2 !s; aux q s
   and out_file = ouvrir_out_check filename_out in begin
-    (* post_print_labels (List.rev data); *)
     aux data content;
     fprintf out_file "%s" !content;
     close_out out_file
@@ -324,7 +341,7 @@ let process_cli (input_file: string ref) (output_file: string ref) (opti_file: s
     in let add_input (filename: string) : unit = match !input_file with  
         "" -> input_file := filename
       | _ -> failwith "" 
-    in Arg.parse speclist add_input "Usage :\n\t%s <entree> [-o sortie | -O sortie_opti]\n"
+    in Arg.parse speclist add_input "Usage :\n\t%s <entree> [-o sortie | -O sortie_opti] [-I dossier d'includes, par défaut vaut ./]\n"
 
 (* Le point de départ du compilateur. *)
 let _ =
