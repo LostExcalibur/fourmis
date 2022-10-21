@@ -15,7 +15,7 @@ while (!= here home) do {
 		move
 	}
 	else {
-	if (= rigthahead home) then {
+	if (= rightahead home) then {
 		turn right;
 		move
 	}
