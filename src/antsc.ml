@@ -103,9 +103,9 @@ let comp_command (commande: Ast.command) (oc: out_channel) : unit =
         | Ast.Pickup ->
                 fprintf oc "  PickUp label_%d\n  Goto label_%d\nlabel_%d:\n" !i !i !i;
                 incr i
-        | Ast.Mark(i,_) ->          fprintf oc "  Mark %d\n" i
+        | Ast.Mark(i, loc) ->          if i > 5 || i < 0 then (eprintf "%tOn ne peut faire mark i que pour 0 <= i <= 5\n" (CodeMap.Span.print loc); exit 1) else fprintf oc "  Mark %d\n" i
         | Ast.Drop ->               fprintf oc "  Drop\n"
-        | Ast.Unmark(i,_) ->        fprintf oc "  Unmark %d\n" i
+        | Ast.Unmark(i, loc) ->        if i > 5 || i < 0 then (eprintf "%tOn ne peut faire mark i que pour 0 <= i <= 5\n" (CodeMap.Span.print loc); exit 1) else fprintf oc "  Unmark %d\n" i
         | Ast.Wait(n,_) ->
             for _ = 1 to n do
                 fprintf oc "  Turn Left\n";
