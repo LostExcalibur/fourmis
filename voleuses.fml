@@ -1,9 +1,11 @@
 macro BougeRandom = {
 	if (random 2) then {
 		turn left;
+		turn left;
 		move
 	}
 	else {
+		turn right;
 		turn right;
 		move
 	}
@@ -20,16 +22,20 @@ macro Bouge = {
 macro SenseBase = {
 	if (= rightahead home) then {
 		turn right;
-		move;
 		drop
 	}
 	else {
 	if (= leftahead home) then {
-		move;
+		turn left;
 		drop
 	}
 	else {
-		move
+	if (= ahead home) then {
+		drop
+	}
+	else {
+		call Bouge
+	}
 	}
 	}
 };
@@ -37,32 +43,32 @@ macro SenseBase = {
 macro SenseBaseEnnemi = {
 	if (= rightahead foehome) then {
 		turn right;
-		move
+		call Bouge
 	}
 	else {
 	if (= leftahead foehome) then {
-		move
+		call Bouge
 	}
 	else {
-		move
+		call Bouge
 	}
 	}
-}
+};
 
 macro BougeDansBase = {
 	if (= ahead foehome) then {
-		move
+		call Bouge
 	}
 	else {
 	if (= rightahead foehome) then {
 		turn right;
 		turn right;
-		move
+		call Bouge
 	}
 	else {
 		turn left;
 		turn left;
-		move
+		call Bouge
 	}
 	}
 };
@@ -130,18 +136,18 @@ macro GoToBaseEnnemi = {
 
 
 macro RentreMaison = {
-	while (!= here home) do {
+	while (!= ahead home) do {
 		call SenseBase;
-		if (= ahead marker 2) then {
+		if (et (= ahead marker 2) (!= ahead home)) then {
 			call Bouge
 		}
 		else {
-		if (= rightahead marker 2) then {
+		if (et (= rightahead marker 2) (!= rightahead home)) then {
 			turn right;
 			call Bouge
 		}
 		else {
-		if (= leftahead marker 2) then {
+		if (et (= leftahead marker 2) (!= leftahead home)) then {
 			turn left;
 			call Bouge
 		}
@@ -165,7 +171,12 @@ macro RentreMaison = {
 	}
 };
 
-call GoToBaseEnnemi;
-call TrouveNourritureDansBase;
-call RentreMaison;
-drop
+
+macro voleuses = {
+	call GoToBaseEnnemi;
+	call TrouveNourritureDansBase;
+	call RentreMaison;
+	drop
+};
+
+call voleuses

@@ -25,11 +25,11 @@ Et voilà ! Vous avez maintenant le fichier executable `antsc`, votre compilat
 
 ## Comment compiler un fichier `.fml`
 
-Une fois que vous avez coder votre fichier en langage `fml` (voir section "Description du langage" pour apprendre à coder en `fml`), par exemple `strategie.fml`, il est très simple de le compiler en un fichier `.brain`. Pour cela, il faut lancer la commande
+Une fois que vous avez coder votre fichier en langage `fml` (voir section "Le langage fml" pour apprendre à coder en `fml`), par exemple `strategie.fml`, il est très simple de le compiler en un fichier `.brain`. Pour cela, il faut lancer la commande
 ```bash
 $ antsc strategie.fml strategie.brain
 ```
-par défaut, si vous ne spécifiez pas la cible de sortie (`stratégie.brain`), votre fichier compilé sera eccri à l’addresse `cervo.brain`.
+par défaut, si vous ne spécifiez pas la cible de sortie (`stratégie.brain`), votre fichier compilé sera écrit à l’addresse `cervo.brain`.
 
 ## Tests
 
@@ -43,7 +43,10 @@ Les tests effectués correspondent à des bouts de code à compiler, suffisemmen
 
 ## Coloration syntaxique
 
-On (bébou) a fait un joli plugin de syntax highlighting, comme ça c'est beau, et nos fichiers `.fml` sont donc plus lisible. (On a aussi de l'auto-indentation pour faciliter le dévloppement de stratégies sans erreurs hihi)
+Pour obtenir la coloration syntaxique dans vim, il suffit d’utiliser la commande
+```
+$ make vim
+```
 
 # Le langage fml
 
@@ -71,7 +74,15 @@ Les `<condition>` à mettre dans les `if`et les `while`peuvent prendre plusieurs
 
 On peut également combiner ces conditions avec des opérateurs `et` et `ou` avec la syntaxe suivante : `et (<condition1>) (<condition2>)`
 
-## Exemples
+Le langage `fml` permet également la construction de macro. Attention, il faut toujours définir les macros en haut du fichier, avant de les appeler. La syntaxe des macros est simple :
+```
+macro <nom de la macro> = {
+	<code>
+}
+```
+Et, pour appeler une macro précédemment définie, il suffit d’utiliser l’instruction `call <nom de la macro>`.
+
+## Exemple
 Un exemple de code fml peut se trouver à l’adresse `exemple.fml` dans le dossier principal. Le code ressemble à ceci :
 ```
 while (!= here food) do {
@@ -108,9 +119,44 @@ move
 
 # Compilateur
 
+Le fonctionnement du compilateur est assez transparent pour la plupars des instructions. Il y a cependant quelques points intéressant à relever. La compilation d’un if simple, par exemple `if (= leftahead friend) then {drop} else {nop}` donnerait 
+```
+debut:
+  Sense LeftAhead label_0 label_1 Friend
+label_0:
+  Drop
+  Goto label_2
+label_1:
+  Goto label_2
+label_2:
+  Goto debut
+```
+Ensuite, on se sert de cette base pour construire les `if (et (<condition1>) <(condition2>))`, les `if (ou (<condition1>) (<condition2>))` et les `while (<condition>)`.
+
+Pour compiler un `if (et (<condition1>) (<condition2>)) then {<expression1>} else {<expression2>}`, on compile, avec ce qu’on à fait pour le `if` simple, le code suivant :
+```
+if (<condition1>) then {
+	if (<condition2>) then {
+		<expression1>
+	}
+	else {
+		<expression2>
+	}
+} else {
+		<expression2>
+}
+```
+
+On peut utiliser le même procédé pour compiler des `if (ou)`.
+
+
+Pour la compilation des `while` : ?!? Il faut demander à Axel. Pour moi, c’est de la magie noire.
+
 ## Optimisation
 
 Après avoir effectué notre compilation, nous procédons à des étapes de post-compilation, qui permettent à la fois de réduire la taille du fichier de sortie, mais également de réduire le nombre d’opération "inutiles" (et donc d’accélérer nos fourmis).
+
+Grace à ces optimisations, on arrive à réduire la taille du fichier d’une vingtaine de pourcents.
 
 ### Remplacement des label -> Goto
 
@@ -135,5 +181,3 @@ et on remplace le `Goto label_a` par le `Flip ...` (fonctionne aussi avec un `Se
 # Fonctionnement de la stratégie
 
 On va chercher la nourriture, puis on la ramène à la maison. Ensuite, on gagne.
-
-
