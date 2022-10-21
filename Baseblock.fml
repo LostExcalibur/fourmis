@@ -115,6 +115,9 @@ macro guard={
 };
 
 macro sortieBase ={
+    mark 0;
+    mark 2;
+    mark 4;
     move;
     if(et (=leftahead marker 1) (=ahead marker 1)) then {
         turn right;
@@ -133,119 +136,190 @@ macro sortieBase ={
     }
 };
 
-macro worker={
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
-    call sortieBase;
+macro BougeRandom = {
+	if (random 2) then {
+		turn left;
+		turn left;
+		move
+	}
+	else {
+		turn right;
+		turn right;
+		move
+	}
+};
 
+macro Bouge = {
+	moveelse {
+		call BougeRandom
+	}
+};
+
+
+
+macro SenseBase = {
+	if (= rightahead home) then {
+		turn right;
+		drop
+	}
+	else {
+	if (= leftahead home) then {
+		turn left;
+		drop
+	}
+	else {
+	if (= ahead home) then {
+		drop
+	}
+	else {
+		call Bouge
+	}
+	}
+	}
+};
+
+macro SenseBaseEnnemi = {
+	if (= rightahead foehome) then {
+		turn right;
+		call Bouge
+	}
+	else {
+	if (= leftahead foehome) then {
+		call Bouge
+	}
+	else {
+		call Bouge
+	}
+	}
+};
+
+macro BougeDansBase = {
+	if (= ahead foehome) then {
+		call Bouge
+	}
+	else {
+	if (= rightahead foehome) then {
+		turn right;
+		turn right;
+		call Bouge
+	}
+	else {
+		turn left;
+		turn left;
+		call Bouge
+	}
+	}
+};
+
+macro TrouveNourritureDansBase = {
+	while (!= here food) do {
+		if (= ahead food) then {
+			call Bouge
+		}
+		else {
+		if (= rightahead food) then {
+			turn right;
+			call Bouge
+		}
+		else {
+		if (= leftahead food) then {
+			turn left;
+			call Bouge
+		}
+		else {
+			call BougeDansBase
+		}
+		}
+		}
+	};
+	pickup
+};
+
+
+macro GoToBaseEnnemi = {
+	while (!= here foehome) do {
+		call SenseBaseEnnemi;
+		if (= ahead marker 3) then {
+			call Bouge
+		}
+		else {
+		if (= rightahead marker 3) then {
+			turn right;
+			call Bouge
+		}
+		else {
+		if (= leftahead marker 3) then {
+			turn left;
+			call Bouge
+		}
+		else {
+			moveelse {
+				if (= rightahead rock) then {
+					turn left;
+					turn left;
+					call Bouge
+				}
+				else {
+					turn right;
+					turn right;
+					call Bouge
+				}
+			}
+		}
+		}
+		};
+		mark 2
+	}
+};
+
+
+macro RentreMaison = {
+	while (!= ahead home) do {
+		call SenseBase;
+		if (et (= ahead marker 2) (!= ahead home)) then {
+			call Bouge
+		}
+		else {
+		if (et (= rightahead marker 2) (!= rightahead home)) then {
+			turn right;
+			call Bouge
+		}
+		else {
+		if (et (= leftahead marker 2) (!= leftahead home)) then {
+			turn left;
+			call Bouge
+		}
+		else {
+			moveelse {
+				if (= rightahead rock) then {
+					turn left;
+					turn left;
+					call Bouge
+				}
+				else {
+					turn right;
+					turn right;
+					call Bouge
+				}
+			}
+		}
+		}
+		};
+		mark 3
+	}
+};
+
+
+macro voleuses = {
+    while(true) do{
+        call GoToBaseEnnemi;
+        call TrouveNourritureDansBase;
+        call RentreMaison;
+        drop
+    }
+};
+
+macro chercheuses ={
     if (random 2) then {
         while(true) do {
             if (= ahead home) then {
@@ -549,7 +623,56 @@ macro worker={
             }
         }
     }
-    
+};
+
+macro worker={
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    call sortieBase;
+    if (random 3) then{
+        call voleuses
+    }
+    else{
+        call chercheuses
+    }
 };  
 
 
