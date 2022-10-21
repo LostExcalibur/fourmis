@@ -1,0 +1,28 @@
+while (!= here food) do {
+	if (random 2) then {
+		turn left;
+		move
+	}
+	else {
+		turn right;
+		move
+	}
+};
+pickup;
+while (!= here home) do {
+	if (= leftahead home) then {
+		turn left;
+		move
+	}
+	else {
+	if (= rigthahead home) then {
+		turn right;
+		move
+	}
+	else {
+		move
+	}
+	}
+};
+drop;
+move
