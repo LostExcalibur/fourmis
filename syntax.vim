@@ -4,27 +4,27 @@ endif
 
 let b:current_syntax = "fml"
 
-syn match 		randomNumber '\d+' 
+syn match 	randomNumber 	'\d+' 
 
-syn keyword 	ident 	macro call
-syn keyword 	cond 	if then else
-syn keyword 	while 	while
-syn keyword 	command nop move turn pickup mark drop
+syn keyword 	ident 		macro call include
+syn keyword 	cond 		if then else
+syn keyword 	while 		while
+syn keyword 	command 	nop move turn pickup mark drop
 
 syn keyword 	lr 		left right
-syn keyword 	valeur 	friend foe friendwithfood foewithfood food rock
-syn keyword 	valeur 	marker foemarker home foehome 
+syn keyword 	valeur 		friend foe friendwithfood foewithfood food rock
+syn keyword 	valeur 		marker foemarker home foehome
 
 syn keyword 	direction 	here leftahead rightahead ahead
 
-hi def link 	ident 	Keyword
-hi def link 	cond 	Conditional
-hi def link 	while 	Repeat
+hi def link 	ident 		Keyword
+hi def link 	cond 		Conditional
+hi def link 	while 		Repeat
 
 hi def link 	lr 		Type
-hi def link 	valeur	Type
+hi def link 	valeur		Type
 
-hi def link 	direction Type
+hi def link 	direction 	Type
 
 syn region block start="{" end="}" fold transparent
 
@@ -36,11 +36,9 @@ function! FmlIndent()
   let previousNum = prevnonblank(v:lnum - 1)
   let previous = getline(previousNum)
 
-  if (previous =~ "{") && (previous !~ "}") && (trim(line) != "}") 
-	return indent(previousNum) + &tabstop
-  else
-	return indent(previousNum) - &tabstop
-  endif
+  " Pas opti mais bon
+  let delta = count(previous, "{") - count(previous, "}")
+  return indent(previousNum) + delta * &tabstop
 
 endfunction
 

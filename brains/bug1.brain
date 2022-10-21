@@ -1,8 +1,0 @@
-move:
-  Move rock
-  Goto move
-rock:
-  Sense Ahead turn rock Rock
-turn:
-  Turn Left
-  Goto move

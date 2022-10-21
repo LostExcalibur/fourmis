@@ -14,7 +14,9 @@ macro BougeRandom = {
 macro Bouge = {
 	moveelse {
 		call BougeRandom
-	}
+		} else {
+		}
+
 };
 
 
