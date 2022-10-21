@@ -283,7 +283,7 @@ let _ =
       process_file Sys.argv.(1) name_out;
       let labels = post_trouver_labels_inutiles name_out in
       post_remplacer_labels_inutiles labels name_out name_opti; 
-      post_inline_labels (post_trouver_labels_inline name_opti) name_opti "opti_v2.brain"
+      post_inline_labels (post_trouver_labels_inline name_opti) name_opti name_opti 
 
     with
     | Lexer.Error (e, span) ->
