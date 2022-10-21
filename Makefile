@@ -43,6 +43,12 @@ src/parser.ml: $(GRAMMAR)
 # Génération de tous les fichiers du parser.
 parser: $(PARSER_FILES)
 
+vim: fml.vim syntax.vim
+	mkdir -p ~/.vim/ftdetect/
+	cp fml.vim ~/.vim/ftdetect/fml.vim
+	mkdir -p ~/.vim/syntax/
+	cp syntax.vim ~/.vim/syntax/fml.vim
+
 deps:
 	$(MAKE) --directory parser_generator
 
