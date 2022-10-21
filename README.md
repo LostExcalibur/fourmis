@@ -153,7 +153,25 @@ if (<condition1>) then {
 On peut utiliser le même procédé pour compiler des `if (ou)`.
 
 
-Pour la compilation des `while` : ?!? Il faut demander à Axel. Pour moi, c’est de la magie noire.
+Pour la compilation des `while` se base sur la compilation d'un if. En effet, on compile `while (<condition>) do {<expression>}` en compilant un `if (<condition>) then {<expression>} else {break i+1}` entre un `Goto label_i \n label_i :` et un `Goto label_i \n label_i+1 :`. Par exemple, le code `while (!= ahead rock) do {move}` se compile en :
+
+```
+debut :
+  Goto label_0
+label_0 :                               ; début de la boucle while
+  Sense Ahead label_3 label_2 Rock      ; début du if
+label_2 :
+  Move label_5
+  Goto label_5
+label_5 :
+  Goto label_4
+label_3 :
+  Goto label_1                          ; break i
+label_4 :                               ; fin du if
+  Goto label_0                          ; retour au début de la boucle while
+label_1 :                               ; label après le while
+  Goto debut
+```
 
 ## Optimisation
 
