@@ -1,0 +1,17 @@
+debut:
+  Goto label_0
+label_0:
+  Sense Here label_3 label_2 Food
+label_2:
+  Turn Left
+  Move label_5
+  Goto label_5
+label_5:
+  Goto label_4
+label_3:
+  Goto label_1
+  Goto label_4
+label_4:
+  Goto label_0
+label_1:
+  Goto debut
