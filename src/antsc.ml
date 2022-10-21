@@ -180,13 +180,14 @@ let comp_program (program: Ast.program) (oc: out_channel) : unit =
 
 let process_file (filename: string) (output: string) : unit =
   (* Ouvre le fichier et créé un lexer. *)
-  let file = ouvrir_in_check filename and out = ouvrir_out_check output in
+  let file = ouvrir_in_check filename in
     let lexer = Lexer.of_channel file in
   (* Parse le fichier. *)
     let (program, _) = Parser.parse_program lexer in
     (* printf "successfully parsed the following program at position %t:\n%t\n" (CodeMap.Span.print span) (Ast.print_program program); *)
-    comp_program program out;
-    close_out out
+  let out = ouvrir_out_check output in  
+  comp_program program out;
+  close_out out
 
 let post_replace (motif: string) (nouveau: string) : string -> string = 
     Str.global_replace (Str.regexp motif) nouveau 
