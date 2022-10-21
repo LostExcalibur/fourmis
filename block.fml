@@ -1,0 +1,98 @@
+macro BougeRandom = {
+	if (= ahead rock) then {
+		turn right;
+		turn right;
+		move
+	}
+	else {
+	if (random 2) then {
+		turn left;
+		move
+	}
+	else {
+		turn right;
+		move
+	}
+	}
+};
+
+macro Bouge = {
+	moveelse {
+		call BougeRandom
+	}
+};
+
+macro Stop = {
+	while (= here foehome) do {
+		nop
+	}
+};
+
+macro longeRight = {
+	if (= here foehome) then {call Stop} else {nop};
+	while (!= here foehome) do {
+		if (!= rightahead foehome) then {
+			turn right;
+			move
+		}
+		else {
+			if (!= rightahead friend) then {
+				turn right;
+				while (!= here foehome) do {
+					move
+				}
+			}
+			else {
+				if (= ahead foehome) then {turn left} else {move}
+			}
+		}
+	}
+};
+
+macro longeLeft = {
+	if (= here foehome) then {call Stop} else {nop};
+	while (!= here foehome) do {
+		if (!= leftahead foehome) then {
+			turn left;
+			move
+		}
+		else {
+			if (!= leftahead friend) then {
+				turn left;
+				while (!= here foehome) do {
+					move
+				}
+			}
+			else {
+				if (= ahead foehome) then {turn right} else {move}
+			}
+		}
+	}
+};
+
+macro SenseBaseEnnemi = {
+	if (= rightahead foehome) then {
+			call longeRight;
+			call Stop
+		}
+	else {
+	if (= leftahead foehome) then {
+		call longeLeft;
+		call Stop
+	}
+	else {
+		nop
+	}
+	}
+};
+
+
+macro GoToBaseEnnemi = {
+	while (!= here foehome) do {
+		call SenseBaseEnnemi;
+		call Bouge
+	}
+};
+
+call GoToBaseEnnemi;
+call Stop

@@ -57,6 +57,10 @@ test:
 	./antsc tests/testIf.fml tests/testIf.brain
 	diff tests/testIf.brain tests/veriftestIf.brain
 	rm tests/testIf.brain
+	./antsc tests/testWhile.fml tests/testWhile.brain
+	diff tests/testWhile.brain tests/veriftestWhile.brain
+	rm tests/testWhile.brain
+	echo "Pas d’erreurs, totu va bien !"
 
 uninstall_deps:
 	$(MAKE) --directory parser_generator uninstall

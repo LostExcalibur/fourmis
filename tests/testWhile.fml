@@ -1,0 +1,4 @@
+while (!= here food) do {
+	turn left;
+	move
+}

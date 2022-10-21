@@ -87,7 +87,7 @@ let comp_condition (cond: Ast.condition) (c: int) (oc: out_channel) : unit =
 
 let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
     match exp with
-        | Ast.Break(c,_) -> fprintf oc "  Goto label_%d\t\t\t break\n" c 
+        | Ast.Break(c,_) -> fprintf oc "  Goto label_%d\n" c 
         | Ast.Do(commande,_) -> comp_command commande oc
 
         | Ast.MoveElse(exp_l,_) ->
@@ -133,22 +133,22 @@ let rec comp_expression (exp: Ast.expression) (oc: out_channel) : unit =
             let comp_with_out = (fun x -> comp_expression x oc) in begin
                 let c = !i in i := c + 3;
                         comp_condition cond c oc;
-                        fprintf oc "label_%d:\t\t\t debut if\n" c;
+                        fprintf oc "label_%d:\n" c;
                         List.iter comp_with_out (List.map unwrap_expr exp1);
                         fprintf oc "  Goto label_%d\n" (c+2);
-                        fprintf oc "label_%d:\t\t\t milieu if\n" (c+1);
+                        fprintf oc "label_%d:\n" (c+1);
                         List.iter comp_with_out (List.map unwrap_expr exp2);
                         fprintf oc "  Goto label_%d\n" (c+2);
-                        fprintf oc "label_%d:\t\t\t fin if\n" (c+2)
+                        fprintf oc "label_%d:\n" (c+2)
             end
         
         | Ast.While((cond,span1),(exp,span2)) -> 
             let c = !i in
-            fprintf oc "  Goto label_%d\t\t\t debut while\n" c;
+            fprintf oc "  Goto label_%d\n" c;
             fprintf oc "label_%d:\n" c;
             i:=!i+2;
             comp_expression (Ast.IfThenElse((cond,span1),(exp,span2),([(Ast.Break (c+1,span1),span1)],span1))) oc;
-            fprintf oc "  Goto label_%d\t\t\t fin while\n" c;
+            fprintf oc "  Goto label_%d\n" c;
             fprintf oc "label_%d:\n" (c+1)
         
         | Ast.Macro((nom, _), (liste, _)) -> begin 

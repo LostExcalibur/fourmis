@@ -1,0 +1,171 @@
+macro BougeRandom = {
+	if (random 2) then {
+		turn left;
+		move
+	}
+	else {
+		turn right;
+		move
+	}
+};
+
+macro Bouge = {
+	moveelse {
+		call BougeRandom
+	}
+};
+
+
+
+macro SenseBase = {
+	if (= rightahead home) then {
+		turn right;
+		move;
+		drop
+	}
+	else {
+	if (= leftahead home) then {
+		move;
+		drop
+	}
+	else {
+		move
+	}
+	}
+};
+
+macro SenseBaseEnnemi = {
+	if (= rightahead foehome) then {
+		turn right;
+		move
+	}
+	else {
+	if (= leftahead foehome) then {
+		move
+	}
+	else {
+		move
+	}
+	}
+}
+
+macro BougeDansBase = {
+	if (= ahead foehome) then {
+		move
+	}
+	else {
+	if (= rightahead foehome) then {
+		turn right;
+		turn right;
+		move
+	}
+	else {
+		turn left;
+		turn left;
+		move
+	}
+	}
+};
+
+macro TrouveNourritureDansBase = {
+	while (!= here food) do {
+		if (= ahead food) then {
+			call Bouge
+		}
+		else {
+		if (= rightahead food) then {
+			turn right;
+			call Bouge
+		}
+		else {
+		if (= leftahead food) then {
+			turn left;
+			call Bouge
+		}
+		else {
+			call BougeDansBase
+		}
+		}
+		}
+	};
+	pickup
+};
+
+
+macro GoToBaseEnnemi = {
+	while (!= here foehome) do {
+		call SenseBaseEnnemi;
+		if (= ahead marker 3) then {
+			call Bouge
+		}
+		else {
+		if (= rightahead marker 3) then {
+			turn right;
+			call Bouge
+		}
+		else {
+		if (= leftahead marker 3) then {
+			turn left;
+			call Bouge
+		}
+		else {
+			moveelse {
+				if (= rightahead rock) then {
+					turn left;
+					turn left;
+					call Bouge
+				}
+				else {
+					turn right;
+					turn right;
+					call Bouge
+				}
+			}
+		}
+		}
+		};
+		mark 2
+	}
+};
+
+
+macro RentreMaison = {
+	while (!= here home) do {
+		call SenseBase;
+		if (= ahead marker 2) then {
+			call Bouge
+		}
+		else {
+		if (= rightahead marker 2) then {
+			turn right;
+			call Bouge
+		}
+		else {
+		if (= leftahead marker 2) then {
+			turn left;
+			call Bouge
+		}
+		else {
+			moveelse {
+				if (= rightahead rock) then {
+					turn left;
+					turn left;
+					call Bouge
+				}
+				else {
+					turn right;
+					turn right;
+					call Bouge
+				}
+			}
+		}
+		}
+		};
+		mark 3
+	}
+};
+
+call GoToBaseEnnemi;
+call TrouveNourritureDansBase;
+call RentreMaison;
+drop
