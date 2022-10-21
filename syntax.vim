@@ -1,5 +1,3 @@
-# A placer dans ~/.vim/syntax/, avec le nom fml.vim
-
 if exists("b:current_syntax")
   finish
 endif
