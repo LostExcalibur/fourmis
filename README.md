@@ -27,9 +27,9 @@ Et voilà ! Vous avez maintenant le fichier executable `antsc`, votre compilat
 
 Une fois que vous avez coder votre fichier en langage `fml` (voir section "Le langage fml" pour apprendre à coder en `fml`), par exemple `strategie.fml`, il est très simple de le compiler en un fichier `.brain`. Pour cela, il faut lancer la commande
 ```bash
-$ antsc strategie.fml strategie.brain
+$ ./antsc strategie.fml -o strategie.brain
 ```
-par défaut, si vous ne spécifiez pas la cible de sortie (`stratégie.brain`), votre fichier compilé sera écrit à l’addresse `cervo.brain`.
+par défaut, si vous ne spécifiez pas la cible de sortie (`stratégie.brain`), votre fichier compilé sera écrit à l’addresse `cervo.brain`. On peut également utiliser `-O` au lieu de `-o` pour compiler en une version optimisée (voir section Optimisation).
 
 ## Tests
 
